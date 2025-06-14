@@ -1,9 +1,9 @@
 import streamlit as st
-st.set_page_config(page_title="Learn", page_icon="📘")
 
+# ✅ This must be the very first Streamlit command
+st.set_page_config(page_title="Learn", page_icon="📘", layout="wide")
 
-# Set up page
-st.set_page_config(page_title="Learn About Trees", layout="wide")
+# ✅ Now safe to call other Streamlit functions
 st.title("📘 Learn: Trees, Climate & CO₂")
 
 # Sidebar navigation
