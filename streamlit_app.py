@@ -141,20 +141,8 @@ st.markdown("""
 # ✅ Sidebar Navigation (fixed)
 with st.sidebar:
     st.title("🌿 Navigation")
-    st.markdown("[🏠 Go to Home](../)")
-    st.page_link("learn.py", label="📘 Learn")
-    st.page_link("quiz.py", label="🧠 Quiz")
-    st.page_link("green_community.py", label="🌱 Green Community")
-    with st.sidebar:
-    st.title("🌿 Navigation")
-    st.markdown("[🏠 Go to Home](../)")
-    st.page_link("learn.py", label="📘 Learn")
-    st.page_link("quiz.py", label="🧠 Quiz")
-    st.page_link("green_community.py", label="🌱 Green Community")
-with st.sidebar:
-    st.title("🌿 Navigation")
-    st.markdown("[🏠 Go to Home](../)")
-    st.page_link("learn.py", label="📘 Learn")
-    st.page_link("quiz.py", label="🧠 Quiz")
-    st.page_link("green_community.py", label="🌱 Green Community")
+    st.markdown("[🏠 Home](./)")
+    st.markdown("[📘 Learn](./pages/learn.py)")
+    st.markdown("[🧠 Quiz](./pages/quiz.py)")
+    st.markdown("[🌱 Green Community](./pages/green_community.py)")
 
