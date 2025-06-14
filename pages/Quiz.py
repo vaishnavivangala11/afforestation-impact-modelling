@@ -1,156 +1,97 @@
 import streamlit as st
 import pandas as pd
-import pathlib
 from datetime import datetime
+import pathlib
 
-# Page settings
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
 
-# Title
 st.title("🧠 Mini Quiz: CO₂ & Trees")
 st.caption("Test your knowledge about afforestation and carbon sequestration!")
 
-# Session states
+# Initialize session states
 if "quiz_started" not in st.session_state:
     st.session_state.quiz_started = False
 if "quiz_submitted" not in st.session_state:
     st.session_state.quiz_submitted = False
 
-# Name entry
+# Ask user name
 name = st.text_input("👤 Enter your name to begin the quiz:")
 if not name:
     st.warning("Please enter your name to start the quiz.")
     st.stop()
 
-# Start button
 if not st.session_state.quiz_started:
     if st.button("▶️ Start Quiz"):
         st.session_state.quiz_started = True
     else:
         st.stop()
 
-# Quiz questions
+# List of 15 quiz questions
 questions = [
-    {"q": "What gas do trees absorb from the atmosphere?",
-     "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"],
-     "answer": "Carbon Dioxide"},
-
-    {"q": "Which part of the tree does photosynthesis?",
-     "options": ["Roots", "Stem", "Leaves", "Bark"],
-     "answer": "Leaves"},
-
-    {"q": "Which gas is released by trees during the day?",
-     "options": ["Carbon Dioxide", "Oxygen", "Methane", "Hydrogen"],
-     "answer": "Oxygen"},
-
-    {"q": "What is the formula for CO₂ absorption?",
-     "options": ["CO₂/year × Age", "CO₂ × Height", "CO₂/year × Age × Survival × Growth", "CO₂ + Water"],
-     "answer": "CO₂/year × Age × Survival × Growth"},
-
-    {"q": "Which tree is best for CO₂ absorption?",
-     "options": ["Bamboo", "Neem", "Banyan", "Peepal"],
-     "answer": "Banyan"},
-
-    {"q": "If a tree absorbs 20 kg CO₂/year, how much in 10 years?",
-     "options": ["200 kg", "20 kg", "100 kg", "2,000 kg"],
-     "answer": "200 kg"},
-
-    {"q": "What does tree survival rate affect?",
-     "options": ["Tree height", "Only oxygen", "Rainfall", "Live tree CO₂ count"],
-     "answer": "Live tree CO₂ count"},
-
-    {"q": "Growth factor is used to:",
-     "options": ["Estimate seeds", "Calculate rainfall", "Adjust for conditions", "Measure diameter"],
-     "answer": "Adjust for conditions"},
-
-    {"q": "How do we calculate CO₂ for 1000 trees?",
-     "options": ["Tree CO₂ × 1000", "CO₂ × Age", "CO₂ × 1000 × Growth", "CO₂/year × Age × 1000 × Survival × Growth"],
-     "answer": "CO₂/year × Age × 1000 × Survival × Growth"},
-
-    {"q": "Why simulate CO₂ for 200 years?",
-     "options": ["Random default", "To confuse users", "For long-living trees", "Because it's a round number"],
-     "answer": "For long-living trees"},
-
-    {"q": "What is afforestation?",
-     "options": ["Cutting forests", "Planting new forests", "Removing CO₂", "Creating buildings"],
-     "answer": "Planting new forests"},
-
-    {"q": "What causes deforestation?",
-     "options": ["Urbanization", "Forest fire", "Logging", "All of the above"],
-     "answer": "All of the above"},
-
-    {"q": "How do trees help cool the earth?",
-     "options": ["Shade", "Carbon absorption", "Transpiration", "All of the above"],
-     "answer": "All of the above"},
-
-    {"q": "What is photosynthesis?",
-     "options": ["Tree respiration", "Process to absorb CO₂ and release O₂", "Tree aging", "Root growth"],
-     "answer": "Process to absorb CO₂ and release O₂"},
-
-    {"q": "What part of a tree stores most CO₂?",
-     "options": ["Roots", "Leaves", "Wood/Biomass", "Bark"],
-     "answer": "Wood/Biomass"},
+    {"q": "What gas do trees absorb from the atmosphere?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"], "answer": "Carbon Dioxide"},
+    {"q": "Which part of the tree is mainly responsible for photosynthesis?", "options": ["Roots", "Stem", "Leaves", "Bark"], "answer": "Leaves"},
+    {"q": "Which gas do trees release during the day?", "options": ["Carbon Dioxide", "Oxygen", "Nitrogen", "Methane"], "answer": "Oxygen"},
+    {"q": "What is the basic formula for CO₂ absorption by a tree?", "options": ["CO₂/year × Age", "CO₂/year × Age × Survival Rate × Growth Factor", "CO₂/year + Height", "Photosynthesis × CO₂"], "answer": "CO₂/year × Age × Survival Rate × Growth Factor"},
+    {"q": "Which tree absorbs the most CO₂?", "options": ["Bamboo", "Neem", "Banyan", "Mango"], "answer": "Banyan"},
+    {"q": "If a tree absorbs 20 kg CO₂ per year, how much in 10 years?", "options": ["200 kg", "20 kg", "100 kg", "2,000 kg"], "answer": "200 kg"},
+    {"q": "What role does tree survival rate play in CO₂ calculation?", "options": ["It reduces the total CO₂ based on live trees", "It doubles the CO₂ rate", "It increases tree height", "It affects only oxygen"], "answer": "It reduces the total CO₂ based on live trees"},
+    {"q": "Growth factor in CO₂ calculation is used to:", "options": ["Account for local growing conditions", "Calculate rainfall", "Estimate seed germination", "Measure tree height"], "answer": "Account for local growing conditions"},
+    {"q": "Which formula helps estimate total CO₂ of 1000 trees?", "options": ["Tree CO₂ × 1000", "Tree CO₂ × 1000 × Age", "CO₂/year × Age × 1000 × Survival × Growth", "CO₂ × Leaves"], "answer": "CO₂/year × Age × 1000 × Survival × Growth"},
+    {"q": "Why do we simulate CO₂ for up to 200 years in this app?", "options": ["To show extreme future climate", "For trees like Banyan or Peepal that live very long", "To confuse users", "200 years is default"], "answer": "For trees like Banyan or Peepal that live very long"},
+    {"q": "Which process in trees helps convert CO₂ to oxygen?", "options": ["Transpiration", "Photosynthesis", "Respiration", "Evaporation"], "answer": "Photosynthesis"},
+    {"q": "What is the best time to plant trees for survival?", "options": ["Winter", "Summer", "Monsoon", "Autumn"], "answer": "Monsoon"},
+    {"q": "Which of these increases a tree’s CO₂ absorption?", "options": ["Fertilizer", "Bigger leaves", "Older age", "Both B and C"], "answer": "Both B and C"},
+    {"q": "How does afforestation fight climate change?", "options": ["Increases rain", "Reduces CO₂", "Spreads pollution", "Cools soil only"], "answer": "Reduces CO₂"},
+    {"q": "How many trees are needed to absorb 1 ton of CO₂ per year?", "options": ["10", "50", "100", "Depends on species"], "answer": "Depends on species"},
 ]
 
-# Show quiz
 st.markdown("### Choose the correct answer for each question:")
-user_answers = {}
-score = 0
 
+user_answers = {}
 for i, q in enumerate(questions, 1):
-    user_answers[i] = st.radio(
-        f"Q{i}: {q['q']}",
-        ["Select an answer"] + q["options"],
-        key=f"q{i}"
-    )
+    all_opts = ["Select an answer"] + q["options"]
+    user_answers[i] = st.radio(f"Q{i}: {q['q']}", all_opts, key=f"q{i}")
 
 # Submit button
 if st.button("✅ Submit Quiz"):
     st.session_state.quiz_submitted = True
 
-# Results
 if st.session_state.quiz_submitted:
     st.markdown("---")
+    correct_count = 0
+
     for i, q in enumerate(questions, 1):
         user_ans = user_answers[i]
         correct = q["answer"]
+
         if user_ans == correct:
-            score += 1
+            correct_count += 1
         elif user_ans == "Select an answer":
             st.warning(f"⚠️ Q{i}: Not answered. Correct: {correct}")
         else:
-            st.info(f"ℹ️ Q{i}: Correct Answer: {correct}")
+            st.info(f"Q{i} submitted.")
 
-    # 🎯 Don’t show score, just encouragement
-    if score == len(questions):
-        st.balloons()
-        st.success("🎉 Excellent! You're a CO₂ champion!")
-    elif score >= 10:
-        st.success("👍 Good job! You know your trees and climate.")
-    else:
-        st.info("📘 Keep learning! Visit the **Learn** section for help.")
+    # 🎯 Save name and timestamp only (not score)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
 
-    # Save result without showing score
+    quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
+    quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
+
     try:
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
-
-        quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
-        quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
-
-                if quiz_log_file.exists():
+        if quiz_log_file.exists():
             if quiz_log_file.stat().st_size > 0:
                 existing = pd.read_csv(quiz_log_file)
                 updated = pd.concat([existing, entry], ignore_index=True)
             else:
-                updated = entry  # File exists but is empty
+                updated = entry
         else:
-            updated = entry  # File doesn't exist yet
-
+            updated = entry
 
         updated.to_csv(quiz_log_file, index=False)
         st.success("📝 Your participation has been recorded. Thank you!")
-
     except Exception as e:
-        st.error("⚠️ Error saving your submission.")
-        st.exception(e)
+        st.error(f"Error saving your submission: {e}")
+
+    st.balloons()
+    st.markdown("✅ Thanks for participating! Explore the **Learn** section to improve your knowledge.")
