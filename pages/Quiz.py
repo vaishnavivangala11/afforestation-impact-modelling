@@ -3,6 +3,8 @@ import pandas as pd
 
 # ✅ This must be the first Streamlit command
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
+# Ask user's name at the beginning
+name = st.text_input("Enter your name (optional)", placeholder="Leave blank to stay anonymous")
 
 # 🧠 Page Title
 st.title("🧠 Mini Quiz: CO₂ & Trees")
@@ -142,3 +144,26 @@ if st.session_state.quiz_submitted:
         st.markdown("👍 Good job! You know your trees and CO₂.")
     else:
         st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
+        import os
+import csv
+from datetime import datetime
+
+# 📂 File path to store quiz participants
+quiz_log_file = os.path.join("app", "quiz_participants.csv")
+
+# 🧾 Prepare the entry
+entry = {
+    "Name": name if name.strip() else "Anonymous",
+    "Submitted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+}
+
+# 💾 Save the entry
+file_exists = os.path.exists(quiz_log_file)
+with open(quiz_log_file, "a", newline="") as file:
+    writer = csv.DictWriter(file, fieldnames=entry.keys())
+    if not file_exists:
+        writer.writeheader()  # write header only once
+    writer.writerow(entry)
+
+st.info("📝 Your name and submission time have been saved.")
+
