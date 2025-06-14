@@ -16,6 +16,9 @@ Share your thoughts, feedback, or experience below. 💚
 # 📂 File to store feedback
 feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "feedback.csv")
 
+# ✅ Ensure folder exists before writing
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
+
 # 📝 Feedback Form
 with st.form("feedback_form", clear_on_submit=True):
     name = st.text_input("Your Name (Optional)", placeholder="Enter your name or leave blank for Anonymous")
@@ -62,4 +65,4 @@ if os.path.exists(feedback_file):
         </div>
         """, unsafe_allow_html=True)
 else:
-    st.info("No feedback yet. Be the first to share your experience!")
+    st.info("No feedback yet. Be the first to share your thoughts!")
