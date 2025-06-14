@@ -1,3 +1,5 @@
+st.set_page_config(page_title="Quiz", page_icon="🧠")
+
 import streamlit as st
 
 # Page setup
