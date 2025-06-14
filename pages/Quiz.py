@@ -100,5 +100,4 @@ if st.session_state.quiz_submitted:
 
     st.balloons()
     st.markdown("🎉 Excellent! You're part of the green future!")
-    st.write(f"Saving to: {quiz_log_file}")
 
