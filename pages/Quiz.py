@@ -125,8 +125,7 @@ for i, q in enumerate(questions, 1):
 # Submit button
 if st.button("✅ Submit Quiz"):
     st.session_state.quiz_submitted = True
-
-# Show results only after submission
+    # Show results only after submission
 if st.session_state.quiz_submitted:
     st.markdown("---")
     for i, q in enumerate(questions, 1):
@@ -140,10 +139,9 @@ if st.session_state.quiz_submitted:
         else:
             st.error(f"❌ Q{i}: Incorrect. You chose '{user_ans}'. Correct is: {correct}")
 
-    st.markdown("---")
-    st.success(f"🎯 Your Score: **{score} out of {len(questions)}**")
+    # ❌ Don't display total score here
 
-    # ✅ Save all attempts
+    # ✅ Save the result (name, timestamp, score)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     entry = pd.DataFrame([{
         "Name": name,
@@ -163,11 +161,15 @@ if st.session_state.quiz_submitted:
     updated.to_csv(quiz_log_file, index=False)
     st.success("📝 Your quiz attempt has been recorded. Thank you!")
 
-    # Show celebration
+    # Optional motivational message
     if score == len(questions):
         st.balloons()
         st.markdown("🎉 Excellent! You're a CO₂ champion! 💚")
     elif score >= 7:
-        st.markdown("👍 Good job! You know your trees and CO₂.")
+        st.markdown("👍 Great effort! You're learning well.")
     else:
-        st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
+        st.markdown("📘 Keep learning! Explore the **Learn** page to improve.")
+
+
+
+        
