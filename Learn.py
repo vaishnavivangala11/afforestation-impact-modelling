@@ -1,3 +1,5 @@
+st.set_page_config(page_title="Learn", page_icon="📘")
+
 import streamlit as st
 
 # Set up page
