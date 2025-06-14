@@ -77,18 +77,21 @@ if st.session_state.quiz_submitted:
 
     quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
     quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
-
     try:
-        if quiz_log_file.exists():
-            if quiz_log_file.stat().st_size > 0:
-                existing = pd.read_csv(quiz_log_file)
-                updated = pd.concat([existing, entry], ignore_index=True)
-            else:
-                updated = entry
-        else:
+    if quiz_log_file.exists() and quiz_log_file.stat().st_size > 0:
+        try:
+            existing = pd.read_csv(quiz_log_file)
+            updated = pd.concat([existing, entry], ignore_index=True)
+        except pd.errors.EmptyDataError:
             updated = entry
+    else:
+        updated = entry
 
-        updated.to_csv(quiz_log_file, index=False)
+    updated.to_csv(quiz_log_file, index=False)
+    st.success("📝 Your participation has been recorded. Thank you!")
+except Exception as e:
+    st.error(f"Error saving your submission: {e}")
+updated.to_csv(quiz_log_file, index=False)
         st.success("📝 Your participation has been recorded. Thank you!")
     except Exception as e:
         st.error(f"Error saving your submission: {e}")
