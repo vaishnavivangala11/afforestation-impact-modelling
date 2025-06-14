@@ -1,4 +1,11 @@
 import streamlit as st
+
+st.set_page_config(page_title="Green Community", page_icon="🌿")
+st.title("🌿 Green Community")
+
+st.caption("Share your thoughts, feedback, or appreciation about this project!")
+
+import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
