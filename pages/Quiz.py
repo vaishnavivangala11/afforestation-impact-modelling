@@ -149,25 +149,30 @@ if st.session_state.quiz_submitted:
         st.markdown("👍 Good job! You know your trees and CO₂.")
     else:
         st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
-       import os
+      import os
 from datetime import datetime
 
-# Log name and timestamp at the end
-timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
+# Force user to enter name AFTER quiz is submitted
+st.markdown("---")
+st.markdown("### ✍️ Please enter your name to complete the quiz")
 
-import pathlib
+name = st.text_input("Your Name (required):")
 
-# 📁 Set correct file path (works in Streamlit Cloud too)
-quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
-quiz_log_file.parent.mkdir(parents=True, exist_ok=True)  # Create folder if not exists
-
-
-if os.path.exists(quiz_log_file):
-    existing = pd.read_csv(quiz_log_file)
-    updated = pd.concat([existing, entry], ignore_index=True)
+if name == "":
+    st.warning("⚠️ Please enter your name to complete the quiz.")
 else:
-    updated = entry
+    if st.button("📥 Final Submit"):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
 
-updated.to_csv(quiz_log_file, index=False)
-st.success("✅ Your quiz completion has been recorded. Thank you!")
+        # ✅ File path inside app/ folder
+        quiz_log_file = os.path.join(os.path.dirname(__file__), "..", "app", "quiz_results.csv")
+
+        if os.path.exists(quiz_log_file):
+            existing = pd.read_csv(quiz_log_file)
+            updated = pd.concat([existing, entry], ignore_index=True)
+        else:
+            updated = entry
+
+        updated.to_csv(quiz_log_file, index=False)
+        st.success("✅ Your name and quiz completion have been recorded. Thank you!")
