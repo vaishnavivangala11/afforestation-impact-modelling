@@ -3,13 +3,6 @@ import pandas as pd
 
 # ✅ This must be the first Streamlit command
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
- # Ask name before starting quiz
-name = st.text_input("Enter your name to begin the quiz:")
-
-if not name:
-    st.warning("Please enter your name to continue.")
-    st.stop()
-
 
 # 🧠 Page Title
 st.title("🧠 Mini Quiz: CO₂ & Trees")
@@ -149,30 +142,3 @@ if st.session_state.quiz_submitted:
         st.markdown("👍 Good job! You know your trees and CO₂.")
     else:
         st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
-      import os
-from datetime import datetime
-
-# Force user to enter name AFTER quiz is submitted
-st.markdown("---")
-st.markdown("### ✍️ Please enter your name to complete the quiz")
-
-name = st.text_input("Your Name (required):")
-
-if name == "":
-    st.warning("⚠️ Please enter your name to complete the quiz.")
-else:
-    if st.button("📥 Final Submit"):
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
-
-        # ✅ File path inside app/ folder
-        quiz_log_file = os.path.join(os.path.dirname(__file__), "..", "app", "quiz_results.csv")
-
-        if os.path.exists(quiz_log_file):
-            existing = pd.read_csv(quiz_log_file)
-            updated = pd.concat([existing, entry], ignore_index=True)
-        else:
-            updated = entry
-
-        updated.to_csv(quiz_log_file, index=False)
-        st.success("✅ Your name and quiz completion have been recorded. Thank you!")
