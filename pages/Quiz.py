@@ -9,25 +9,19 @@ st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
 st.title("🧠 Mini Quiz: CO₂ & Trees")
 st.caption("Test your knowledge about afforestation and carbon sequestration!")
 
-# Session state initialization
-if "quiz_started" not in st.session_state:
-    st.session_state.quiz_started = False
-if "quiz_submitted" not in st.session_state:
-    st.session_state.quiz_submitted = False
-
 # Ask for name before starting
 name = st.text_input("👤 Enter your name to begin the quiz:")
 if not name:
     st.warning("Please enter your name to start the quiz.")
     st.stop()
 
-if not st.session_state.quiz_started:
-    if st.button("▶️ Start Quiz"):
-        st.session_state.quiz_started = True
-    else:
-        st.stop()
+if st.button("▶️ Start Quiz"):
+    st.session_state.quiz_started = True
 
-# Quiz Questions (15 total)
+if "quiz_started" not in st.session_state or not st.session_state.quiz_started:
+    st.stop()
+
+# Quiz Questions
 questions = [
     {"q": "What gas do trees absorb from the atmosphere?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"], "answer": "Carbon Dioxide"},
     {"q": "Which part of the tree is mainly responsible for photosynthesis?", "options": ["Roots", "Stem", "Leaves", "Bark"], "answer": "Leaves"},
@@ -47,7 +41,6 @@ questions = [
 ]
 
 st.markdown("### Choose the correct answer for each question:")
-
 user_answers = {}
 score = 0
 
@@ -58,10 +51,6 @@ for i, q in enumerate(questions, 1):
 
 # Submit Button
 if st.button("✅ Submit Quiz"):
-    st.session_state.quiz_submitted = True
-
-# Result Logic
-if st.session_state.quiz_submitted:
     st.markdown("---")
     for i, q in enumerate(questions, 1):
         user_ans = user_answers[i]
@@ -74,10 +63,7 @@ if st.session_state.quiz_submitted:
         else:
             st.error(f"❌ Q{i}: Incorrect. Correct answer: {correct}")
 
-    # 🎯 Do not show score to user
-    # st.success(f"🎯 Your Score: **{score} out of {len(questions)}**")
-
-    # 📝 Save Submission
+    # Save to CSV (only name + timestamp)
     try:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
@@ -100,4 +86,5 @@ if st.session_state.quiz_submitted:
 
     st.balloons()
     st.markdown("🎉 Excellent! You're part of the green future!")
+
 
