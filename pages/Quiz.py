@@ -15,6 +15,12 @@ if "quiz_submitted" not in st.session_state:
     st.session_state.quiz_submitted = False
 
 # Start quiz
+# Ask user for their name before starting
+name = st.text_input("👤 Enter your name to begin the quiz:")
+if not name:
+    st.warning("Please enter your name to start the quiz.")
+    st.stop()
+
 if not st.session_state.quiz_started:
     if st.button("▶️ Start Quiz"):
         st.session_state.quiz_started = True
@@ -136,9 +142,29 @@ if st.session_state.quiz_submitted:
     st.success(f"🎯 Your Score: **{score} out of {len(questions)}**")
 
     if score == len(questions):
+        import pathlib
+from datetime import datetime
+
+# ✅ Save quiz submission (name + time)
+timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
+
+quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
+quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
+
+if quiz_log_file.exists():
+    existing = pd.read_csv(quiz_log_file)
+    updated = pd.concat([existing, entry], ignore_index=True)
+else:
+    updated = entry
+
+updated.to_csv(quiz_log_file, index=False)
+st.success("📝 Your participation has been recorded. Thank you!")
+
         st.balloons()
         st.markdown("🎉 Excellent! You're a CO₂ champion! 💚")
     elif score >= 7:
         st.markdown("👍 Good job! You know your trees and CO₂.")
     else:
         st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
+        
