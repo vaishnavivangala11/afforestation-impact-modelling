@@ -3,18 +3,19 @@ import pandas as pd
 from datetime import datetime
 import pathlib
 
+# Page config
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
 
 st.title("🧠 Mini Quiz: CO₂ & Trees")
 st.caption("Test your knowledge about afforestation and carbon sequestration!")
 
-# Initialize session states
+# Session state initialization
 if "quiz_started" not in st.session_state:
     st.session_state.quiz_started = False
 if "quiz_submitted" not in st.session_state:
     st.session_state.quiz_submitted = False
 
-# Ask user name
+# Ask for name before starting
 name = st.text_input("👤 Enter your name to begin the quiz:")
 if not name:
     st.warning("Please enter your name to start the quiz.")
@@ -26,7 +27,7 @@ if not st.session_state.quiz_started:
     else:
         st.stop()
 
-# List of 15 quiz questions
+# Quiz Questions (15 total)
 questions = [
     {"q": "What gas do trees absorb from the atmosphere?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"], "answer": "Carbon Dioxide"},
     {"q": "Which part of the tree is mainly responsible for photosynthesis?", "options": ["Roots", "Stem", "Leaves", "Bark"], "answer": "Leaves"},
@@ -38,63 +39,64 @@ questions = [
     {"q": "Growth factor in CO₂ calculation is used to:", "options": ["Account for local growing conditions", "Calculate rainfall", "Estimate seed germination", "Measure tree height"], "answer": "Account for local growing conditions"},
     {"q": "Which formula helps estimate total CO₂ of 1000 trees?", "options": ["Tree CO₂ × 1000", "Tree CO₂ × 1000 × Age", "CO₂/year × Age × 1000 × Survival × Growth", "CO₂ × Leaves"], "answer": "CO₂/year × Age × 1000 × Survival × Growth"},
     {"q": "Why do we simulate CO₂ for up to 200 years in this app?", "options": ["To show extreme future climate", "For trees like Banyan or Peepal that live very long", "To confuse users", "200 years is default"], "answer": "For trees like Banyan or Peepal that live very long"},
-    {"q": "Which process in trees helps convert CO₂ to oxygen?", "options": ["Transpiration", "Photosynthesis", "Respiration", "Evaporation"], "answer": "Photosynthesis"},
-    {"q": "What is the best time to plant trees for survival?", "options": ["Winter", "Summer", "Monsoon", "Autumn"], "answer": "Monsoon"},
-    {"q": "Which of these increases a tree’s CO₂ absorption?", "options": ["Fertilizer", "Bigger leaves", "Older age", "Both B and C"], "answer": "Both B and C"},
-    {"q": "How does afforestation fight climate change?", "options": ["Increases rain", "Reduces CO₂", "Spreads pollution", "Cools soil only"], "answer": "Reduces CO₂"},
-    {"q": "How many trees are needed to absorb 1 ton of CO₂ per year?", "options": ["10", "50", "100", "Depends on species"], "answer": "Depends on species"},
+    {"q": "What does photosynthesis require besides CO₂?", "options": ["Sunlight and water", "Nitrogen", "Oxygen", "Heat only"], "answer": "Sunlight and water"},
+    {"q": "What does deforestation lead to?", "options": ["More CO₂ in air", "Faster rain", "Bigger leaves", "Less oxygen"], "answer": "More CO₂ in air"},
+    {"q": "What is a carbon sink?", "options": ["A system that absorbs more CO₂ than it emits", "A pipe that removes CO₂", "A tree hole", "A mountain lake"], "answer": "A system that absorbs more CO₂ than it emits"},
+    {"q": "Which type of tree is best for coastal areas like Kakinada?", "options": ["Mangroves", "Cactus", "Pine", "Bamboo"], "answer": "Mangroves"},
+    {"q": "What is one benefit of planting native tree species?", "options": ["Better survival and CO₂ capture", "They grow taller", "They are colorful", "They require fertilizers"], "answer": "Better survival and CO₂ capture"},
 ]
 
 st.markdown("### Choose the correct answer for each question:")
 
 user_answers = {}
-for i, q in enumerate(questions, 1):
-    all_opts = ["Select an answer"] + q["options"]
-    user_answers[i] = st.radio(f"Q{i}: {q['q']}", all_opts, key=f"q{i}")
+score = 0
 
-# Submit button
+# Quiz UI
+for i, q in enumerate(questions, 1):
+    all_options = ["Select an answer"] + q["options"]
+    user_answers[i] = st.radio(f"Q{i}: {q['q']}", all_options, key=f"q{i}")
+
+# Submit Button
 if st.button("✅ Submit Quiz"):
     st.session_state.quiz_submitted = True
 
+# Result Logic
 if st.session_state.quiz_submitted:
     st.markdown("---")
-    correct_count = 0
-
     for i, q in enumerate(questions, 1):
         user_ans = user_answers[i]
         correct = q["answer"]
-
         if user_ans == correct:
-            correct_count += 1
+            score += 1
+            st.success(f"✅ Q{i}: Correct!")
         elif user_ans == "Select an answer":
-            st.warning(f"⚠️ Q{i}: Not answered. Correct: {correct}")
+            st.warning(f"⚠️ Q{i}: Not answered. Correct answer: {correct}")
         else:
-            st.info(f"Q{i} submitted.")
+            st.error(f"❌ Q{i}: Incorrect. Correct answer: {correct}")
 
-    # 🎯 Save name and timestamp only (not score)
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
+    # 🎯 Do not show score to user
+    # st.success(f"🎯 Your Score: **{score} out of {len(questions)}**")
 
-    quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
-    quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
+    # 📝 Save Submission
     try:
-    if quiz_log_file.exists() and quiz_log_file.stat().st_size > 0:
-        try:
-            existing = pd.read_csv(quiz_log_file)
-            updated = pd.concat([existing, entry], ignore_index=True)
-        except pd.errors.EmptyDataError:
-            updated = entry
-    else:
-        updated = entry
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
+        quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
+        quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
 
-    updated.to_csv(quiz_log_file, index=False)
-    st.success("📝 Your participation has been recorded. Thank you!")
-except Exception as e:
-    st.error(f"Error saving your submission: {e}")
-updated.to_csv(quiz_log_file, index=False)
+        if quiz_log_file.exists() and quiz_log_file.stat().st_size > 0:
+            try:
+                existing = pd.read_csv(quiz_log_file)
+                updated = pd.concat([existing, entry], ignore_index=True)
+            except pd.errors.EmptyDataError:
+                updated = entry
+        else:
+            updated = entry
+
+        updated.to_csv(quiz_log_file, index=False)
         st.success("📝 Your participation has been recorded. Thank you!")
     except Exception as e:
         st.error(f"Error saving your submission: {e}")
 
     st.balloons()
-    st.markdown("✅ Thanks for participating! Explore the **Learn** section to improve your knowledge.")
+    st.markdown("🎉 Excellent! You're part of the green future!")
