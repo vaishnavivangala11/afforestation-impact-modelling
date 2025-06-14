@@ -137,7 +137,7 @@ st.markdown("""
 # ✅ Sidebar Navigation (correctly uses page_link)
 with st.sidebar:
     st.title("🌿 Navigation")
-    st.markdown("[🏠 Home](./)")  # ✅ Correct way for Home page
+    st.markdown("[🏠 Home](./)")
     st.page_link("pages/learn.py", label="📘 Learn")
     st.page_link("pages/quiz.py", label="🧠 Quiz")
     st.page_link("pages/green_community.py", label="🌱 Green Community")
