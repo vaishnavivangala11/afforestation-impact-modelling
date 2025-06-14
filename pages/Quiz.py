@@ -1,7 +1,10 @@
 import streamlit as st
-st.set_page_config(page_title="Quiz", page_icon="🧠")
-# Page setup
+import pandas as pd
+
+# ✅ This must be the first Streamlit command
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
+
+# 🧠 Page Title
 st.title("🧠 Mini Quiz: CO₂ & Trees")
 st.caption("Test your knowledge about afforestation and carbon sequestration!")
 
