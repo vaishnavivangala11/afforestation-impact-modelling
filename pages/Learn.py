@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(page_title="Learn", page_icon="📘")
+
 
 # Set up page
 st.set_page_config(page_title="Learn About Trees", layout="wide")
