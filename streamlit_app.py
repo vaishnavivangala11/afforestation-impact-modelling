@@ -32,6 +32,31 @@ st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; �
 
 # ✅ Display CO2 & info
 st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
+with st.expander("🧮 How is this CO₂ value calculated? Click to see the formula"):
+    st.markdown("""
+    ### 🧾 **CO₂ Absorption Formula**
+
+    ```
+    Total CO₂ = (CO₂ per year) × (Tree Age) × (Survival Rate) × (Growth Factor)
+    ```
+
+    #### ✅ Explanation:
+    - **CO₂ per year**: How much CO₂ this tree species absorbs annually (e.g., 22.1 kg/year for Neem).
+    - **Tree Age**: Number of years you've selected.
+    - **Survival Rate**: Likelihood the tree survives (e.g., 0.85 = 85%).
+    - **Growth Factor**: Adjustment based on tree’s growth rate and environmental fit (e.g., 1.0).
+
+    ---
+    #### 📌 **Example**:
+    For a Neem tree (CO₂/year = 22.1), age = 1, survival rate = 0.85, growth factor = 1.0:
+
+    ```
+    Total CO₂ = 22.1 × 1 × 0.85 × 1.0 = 18.78 kg
+    ```
+
+    This is a **realistic estimate** of how much carbon this tree can remove in that time. 🌍🌳
+    """)
+
 st.info(f"🧪 **Soil Type:** {selected_tree['Soil_Type']}\n\n📍 **Best Place to Plant:** {selected_tree['Best_Place_to_Plant']}")
 
 # 📈 CO2 Graph Over 20 Years
