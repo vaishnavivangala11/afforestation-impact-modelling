@@ -15,6 +15,9 @@ Share your thoughts, feedback, or experience below. 💚
 
 # 📂 File to store feedback
 feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "feedback.csv")
+# ✅ Create the 'app/' folder if it doesn't exist
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
+
 
 # ✅ Ensure folder exists before writing
 os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
