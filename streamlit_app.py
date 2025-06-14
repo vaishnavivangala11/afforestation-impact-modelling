@@ -142,6 +142,19 @@ st.markdown("""
 with st.sidebar:
     st.title("🌿 Navigation")
     st.markdown("[🏠 Go to Home](../)")
-    st.page_link("pages/learn.py", label="📘 Learn")
-    st.page_link("pages/quiz.py", label="🧠 Quiz")
-    st.page_link("pages/green_community.py", label="🌱 Green Community")  # ✅ Use new name
+    st.page_link("learn.py", label="📘 Learn")
+    st.page_link("quiz.py", label="🧠 Quiz")
+    st.page_link("green_community.py", label="🌱 Green Community")
+    with st.sidebar:
+    st.title("🌿 Navigation")
+    st.markdown("[🏠 Go to Home](../)")
+    st.page_link("learn.py", label="📘 Learn")
+    st.page_link("quiz.py", label="🧠 Quiz")
+    st.page_link("green_community.py", label="🌱 Green Community")
+with st.sidebar:
+    st.title("🌿 Navigation")
+    st.markdown("[🏠 Go to Home](../)")
+    st.page_link("learn.py", label="📘 Learn")
+    st.page_link("quiz.py", label="🧠 Quiz")
+    st.page_link("green_community.py", label="🌱 Green Community")
+
