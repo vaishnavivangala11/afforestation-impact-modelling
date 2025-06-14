@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 import tempfile
 import os
 from fpdf import FPDF
-st.set_page_config(page_title="Home", page_icon="🏠")
-# ✅ Set page title
-st.set_page_config(page_title="Afforestation Impact – East Godavari", layout="wide")
 
-# ✅ Load Excel file safely
-file_path = os.path.join(os.path.dirname(__file__), "local_species.xlsx")
+# ✅ Page config must be first Streamlit command
+st.set_page_config(page_title="Afforestation Impact – East Godavari", page_icon="🌳", layout="wide")
 
+# ✅ Load Excel file from app/ folder
+file_path = os.path.join(os.path.dirname(__file__), "app", "local_species.xlsx")
 df = pd.read_excel(file_path)
 
 # ✅ Title
@@ -21,7 +20,7 @@ tree = st.selectbox("Select a Tree Species", df["Tree Name"])
 
 # 📏 Tree age input
 age = st.slider("Enter Tree Age (in Years)", min_value=1, max_value=200)
-st.caption("ℹ️ Most trees absorb CO₂ effectively for 20–30 years. We allow up to 200 years for special or long-living species like Banyan or Peepal.")
+st.caption("ℹ️ Most trees absorb CO₂ effectively for 20–30 years. We allow up to 200 years for long-living species like Banyan or Peepal.")
 
 # 📊 Get selected tree row
 selected_tree = df[df["Tree Name"] == tree].iloc[0]
@@ -29,7 +28,6 @@ survival_rate = selected_tree["Survival_rate"]
 growth_factor = selected_tree["Growth_factor"]
 adjusted_co2 = age * selected_tree["CO2_per_year_kg"] * survival_rate * growth_factor
 st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
-
 
 # ✅ Display CO2 & info
 st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
@@ -130,17 +128,15 @@ By promoting tree planting using real local species, this project actively suppo
 By combining science, local knowledge, and technology, our project promotes sustainability. 💚
 """)
 
-# Final message
 st.markdown("""
 🌳 *Your simple act of planting a tree supports global goals and local futures.*  
 ✅ From cleaner air to better jobs, every tree brings us one step closer to the SDGs.
 """)
 
-# ✅ Sidebar Navigation (fixed)
+# ✅ Sidebar Navigation (correctly uses page_link)
 with st.sidebar:
     st.title("🌿 Navigation")
-    st.markdown("[🏠 Home](./)")
-    st.markdown("[📘 Learn](./pages/learn.py)")
-    st.markdown("[🧠 Quiz](./pages/quiz.py)")
-    st.markdown("[🌱 Green Community](./pages/green_community.py)")
-
+    st.page_link("streamlit_app.py", label="🏠 Home")
+    st.page_link("pages/learn.py", label="📘 Learn")
+    st.page_link("pages/quiz.py", label="🧠 Quiz")
+   
