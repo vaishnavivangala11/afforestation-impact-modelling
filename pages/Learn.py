@@ -9,7 +9,7 @@ st.title("📘 Learn: Trees, Climate & CO₂")
 # Sidebar navigation
 st.sidebar.markdown("## 📚 Navigation")
 st.sidebar.page_link("streamlit_app.py", label="🏠 Home")
-st.sidebar.page_link("pages/learn.py", label="📘 Learn")
+st.sidebar.page_link("pages/Learn.py", label="📘 Learn")
 
 # Search
 search = st.text_input("🔍 Search a topic...", "").lower()
