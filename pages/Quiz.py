@@ -145,25 +145,29 @@ if st.session_state.quiz_submitted:
     else:
         st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
         import os
-import csv
 from datetime import datetime
 
-# 📂 File path to store quiz participants
-quiz_log_file = os.path.join("app", "quiz_participants.csv")
+# Force user to enter name AFTER quiz is submitted
+st.markdown("---")
+st.markdown("### ✍️ Please enter your name to complete the quiz")
 
-# 🧾 Prepare the entry
-entry = {
-    "Name": name if name.strip() else "Anonymous",
-    "Submitted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-}
+name = st.text_input("Your Name (required):")
 
-# 💾 Save the entry
-file_exists = os.path.exists(quiz_log_file)
-with open(quiz_log_file, "a", newline="") as file:
-    writer = csv.DictWriter(file, fieldnames=entry.keys())
-    if not file_exists:
-        writer.writeheader()  # write header only once
-    writer.writerow(entry)
+if name == "":
+    st.warning("⚠️ Please enter your name to complete the quiz.")
+else:
+    if st.button("📥 Final Submit"):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
 
-st.info("📝 Your name and submission time have been saved.")
+        # ✅ File path inside app/ folder
+        quiz_log_file = os.path.join(os.path.dirname(__file__), "..", "app", "quiz_results.csv")
 
+        if os.path.exists(quiz_log_file):
+            existing = pd.read_csv(quiz_log_file)
+            updated = pd.concat([existing, entry], ignore_index=True)
+        else:
+            updated = entry
+
+        updated.to_csv(quiz_log_file, index=False)
+        st.success("✅ Your name and quiz completion have been recorded. Thank you!")
