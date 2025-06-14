@@ -1,5 +1,5 @@
 import streamlit as st
-
+st.set_page_config(page_title="Quiz", page_icon="🧠")
 # Page setup
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
 st.title("🧠 Mini Quiz: CO₂ & Trees")
