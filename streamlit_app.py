@@ -1,12 +1,10 @@
-st.set_page_config(page_title="Home", page_icon="🏠")
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import tempfile
 import os
 from fpdf import FPDF
-
+st.set_page_config(page_title="Home", page_icon="🏠")
 # ✅ Set page title
 st.set_page_config(page_title="Afforestation Impact – East Godavari", layout="wide")
 
