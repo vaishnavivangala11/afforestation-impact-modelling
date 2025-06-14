@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import pathlib
+from datetime import datetime
 
 # ✅ This must be the first Streamlit command
 st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
@@ -14,20 +16,20 @@ if "quiz_started" not in st.session_state:
 if "quiz_submitted" not in st.session_state:
     st.session_state.quiz_submitted = False
 
-# Start quiz
-# Ask user for their name before starting
+# Ask for name before quiz
 name = st.text_input("👤 Enter your name to begin the quiz:")
 if not name:
     st.warning("Please enter your name to start the quiz.")
     st.stop()
 
+# Start button
 if not st.session_state.quiz_started:
     if st.button("▶️ Start Quiz"):
         st.session_state.quiz_started = True
     else:
         st.stop()
 
-# Quiz questions
+# Quiz Questions
 questions = [
     {
         "q": "What gas do trees absorb from the atmosphere?",
@@ -103,28 +105,49 @@ questions = [
             "200 years is default"
         ],
         "answer": "For trees like Banyan or Peepal that live very long"
+    },
+    # ✅ Extra CO₂ Formula Questions
+    {
+        "q": "If a tree absorbs 25 kg CO₂/year, survives 80%, and growth factor is 1.2, how much in 10 years?",
+        "options": ["240 kg", "2400 kg", "1000 kg", "240 kg × 1.2 × 0.8"],
+        "answer": "240 kg × 1.2 × 0.8"
+    },
+    {
+        "q": "What does 'Survival Rate' of 0.6 mean in a plantation of 1000 trees?",
+        "options": ["600 trees survive", "60 trees survive", "400 trees survive", "100 trees survive"],
+        "answer": "600 trees survive"
+    },
+    {
+        "q": "Which value affects total CO₂ most in formula?",
+        "options": ["Survival Rate", "Leaf color", "Rainfall", "Planting month"],
+        "answer": "Survival Rate"
+    },
+    {
+        "q": "If 1 tree absorbs 22 kg/year, what's total for 50 trees in 5 years?",
+        "options": ["5500 kg", "220 kg", "550 kg", "None"],
+        "answer": "5500 kg"
+    },
+    {
+        "q": "In CO₂ formula, what is multiplied with CO₂/year, Age, Tree Count?",
+        "options": ["Soil type", "Species", "Survival × Growth factor", "Sunlight"],
+        "answer": "Survival × Growth factor"
     }
 ]
 
+# Display Questions
 st.markdown("### Choose the correct answer for each question:")
-
 user_answers = {}
 score = 0
 
-# Display quiz
 for i, q in enumerate(questions, 1):
     all_options = ["Select an answer"] + q["options"]
-    user_answers[i] = st.radio(
-        f"Q{i}: {q['q']}", 
-        all_options,
-        key=f"q{i}"
-    )
+    user_answers[i] = st.radio(f"Q{i}: {q['q']}", all_options, key=f"q{i}")
 
-# Submit button
+# Submit
 if st.button("✅ Submit Quiz"):
     st.session_state.quiz_submitted = True
 
-# Show results only after submission
+# Results
 if st.session_state.quiz_submitted:
     st.markdown("---")
     for i, q in enumerate(questions, 1):
@@ -141,30 +164,30 @@ if st.session_state.quiz_submitted:
     st.markdown("---")
     st.success(f"🎯 Your Score: **{score} out of {len(questions)}**")
 
+    # Save participation if perfect score
     if score == len(questions):
-        import pathlib
-from datetime import datetime
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
+        quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
+        quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
 
-# ✅ Save quiz submission (name + time)
-timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
+        if quiz_log_file.exists():
+            existing = pd.read_csv(quiz_log_file)
+            updated = pd.concat([existing, entry], ignore_index=True)
+        else:
+            updated = entry
 
-quiz_log_file = pathlib.Path("app") / "quiz_results.csv"
-quiz_log_file.parent.mkdir(parents=True, exist_ok=True)
-
-if quiz_log_file.exists():
-    existing = pd.read_csv(quiz_log_file)
-    updated = pd.concat([existing, entry], ignore_index=True)
-else:
-    updated = entry
-
-updated.to_csv(quiz_log_file, index=False)
-st.success("📝 Your participation has been recorded. Thank you!")
-
+        updated.to_csv(quiz_log_file, index=False)
+        st.success("📝 Your participation has been recorded. Thank you!")
         st.balloons()
         st.markdown("🎉 Excellent! You're a CO₂ champion! 💚")
-    elif score >= 7:
+    elif score >= 10:
         st.markdown("👍 Good job! You know your trees and CO₂.")
     else:
         st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
-        
+
+    # Retake option
+    if st.button("🔁 Retake Quiz"):
+        st.session_state.quiz_started = False
+        st.session_state.quiz_submitted = False
+        st.rerun()
