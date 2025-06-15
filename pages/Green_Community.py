@@ -48,7 +48,7 @@ if send:
         chat_df = pd.concat([chat_df, new_entry], ignore_index=True)
         chat_df.to_csv(chat_file, index=False)
         st.success("✅ Message posted!")
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.warning("⚠️ Please fill in both name and message.")
 
@@ -81,7 +81,7 @@ def display_messages(df, parent_id="", level=0):
                         chat_df = pd.concat([chat_df, reply_entry], ignore_index=True)
                         chat_df.to_csv(chat_file, index=False)
                         st.success("✅ Reply posted!")
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.warning("⚠️ Name and reply cannot be empty.")
 
@@ -133,4 +133,4 @@ if fb_submit:
 
     all_feedback.to_csv(feedback_file, index=False)
     st.success("✅ Your feedback has been received and recorded. We truly appreciate your thoughts! 🌿")
-    st.experimental_rerun()
+    st.rerun()
