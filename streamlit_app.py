@@ -137,6 +137,28 @@ if st.button("📄 Create and Download PDF Report"):
 st.subheader("🗺️ East Godavari Map")
 map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
 st.map(map_df, zoom=9)
+st.subheader("📘 Case Studies: Real Impact Examples")
+
+with st.expander("🌿 Neem Trees in East Godavari (10 years)"):
+    st.markdown("""
+- **1,000 Neem trees × 10 years**  
+- CO₂ absorbed = **212.5 tons**  
+- 🌳 Great for schools, village edges, and parks.
+""")
+
+with st.expander("🪴 Duckweed in a 1-Acre Pond (2 years)"):
+    st.markdown("""
+- Rapid-growing aquatic plant  
+- CO₂ removed = **~10 tons**  
+- 💧 Perfect for ponds, tanks, and wastewater areas.
+""")
+
+with st.expander("🌾 Vetiver Grass on Slopes (15 years)"):
+    st.markdown("""
+- **500 vetiver rows** stabilize land and absorb CO₂  
+- CO₂ stored = **8.1 tons**  
+- 🛡️ Prevents erosion on bunds, hills, and roadsides.
+""")
 
 # 🌍 SDG Text
 st.subheader("🌍 SDG Impact")
