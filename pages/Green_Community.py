@@ -15,11 +15,6 @@ Share your thoughts, feedback, or experience below. 💚
 
 # 📂 File to store feedback
 feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "feedback.csv")
-# ✅ Create the 'app/' folder if it doesn't exist
-os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
-
-
-# ✅ Ensure folder exists before writing
 os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
 
 # 📝 Feedback Form
@@ -51,21 +46,36 @@ if submit:
         updated.to_csv(feedback_file, index=False)
         st.success("✅ Thank you! Your feedback has been added to the Green Community wall below.")
 
+# 👥 Show Total Feedback
+if os.path.exists(feedback_file):
+    total_feedback = len(pd.read_csv(feedback_file))
+    st.markdown(f"### 👥 Total Feedback Received: **{total_feedback}**")
+
 # 🌿 Show Community Feedback
 st.markdown("## 💬 Community Wall – What Others Are Saying")
 
 if os.path.exists(feedback_file):
     df = pd.read_csv(feedback_file)
     df = df.sort_values("Timestamp", ascending=False)
-    
-    for _, row in df.iterrows():
+
+    for index, row in df.iterrows():
         st.markdown(f"""
         <div style='background-color:#f4fff4;padding:10px;border-radius:8px;margin-bottom:10px'>
-            <strong>👤 {row['Name']}</strong>  
-            ⭐ **Rating**: {row['Rating']} / 5  
+            <strong>👤 {row['Name']}</strong><br>
+            ⭐ <b>Rating:</b> {row['Rating']} / 5  
             <p>{row['Feedback']}</p>
             <small>🕒 {row['Timestamp']}</small>
         </div>
         """, unsafe_allow_html=True)
+
+    # 🔐 Admin Delete Option
+    with st.expander("🛠️ Admin: Delete All Feedback"):
+        password = st.text_input("Enter Admin Password to Delete", type="password")
+        if st.button("🗑️ Delete All Feedback"):
+            if password == "Pikachu@05":
+                os.remove(feedback_file)
+                st.success("✅ All feedback has been deleted.")
+            else:
+                st.error("❌ Incorrect password. Access denied.")
 else:
     st.info("No feedback yet. Be the first to share your thoughts!")
