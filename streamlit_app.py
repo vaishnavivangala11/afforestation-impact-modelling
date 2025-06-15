@@ -77,10 +77,29 @@ ax.set_ylabel("Cumulative CO₂ Captured (kg)")
 ax.set_title(f"CO₂ Capture by {selected_species} Over 20 Years")
 st.pyplot(fig)
 
-# 🌳 What if 1000 trees
-st.subheader("🧠 What if 1000 Trees Are Planted?")
-co2_1000_trees = [co2_rate * year * 1000 * survival * growth for year in years]
-total_20_years = co2_1000_trees[-1]
+st.markdown("### 🌳 What If Scenario: 1000 Plants Over 20 Years")
+
+years = list(range(1, 21))
+co2_absorption = []
+
+tree_row = df[df['Species'] == selected_tree]
+if not tree_row.empty:
+    rate = tree_row['CO2_Absorption_kg_per_year'].values[0]
+    max_age = tree_row['Max_Age'].values[0]
+
+    for year in years:
+        if year <= max_age:
+            total = rate * 1000 * year
+        else:
+            total = rate * 1000 * max_age
+        co2_absorption.append(total)
+
+    st.line_chart(co2_absorption)
+if selected_tree == "Duckweed":
+    st.info("💧 Duckweed grows in water bodies and absorbs CO₂ rapidly. Ideal for wetlands or wastewater treatment.")
+elif selected_tree == "Vetiver Grass":
+    st.info("🌾 Vetiver is great for erosion control and carbon in soil. Perfect for riverbanks and degraded lands.")
+
 
 fig2, ax2 = plt.subplots()
 ax2.plot(years, co2_1000_trees, marker='s', color='orange')
