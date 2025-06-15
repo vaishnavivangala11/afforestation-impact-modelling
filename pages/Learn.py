@@ -121,15 +121,37 @@ for section, topics in lessons.items():
                 st.markdown(content)
             pdf_text += f"\n📘 {title}\n{content.strip()}\n"
 
-# PDF download
+from fpdf import FPDF
+from pathlib import Path
+
+# PDF generation using fpdf2 with Unicode support
+class PDF(FPDF):
+    def header(self):
+        self.set_font("DejaVu", size=14)
+        self.cell(0, 10, "🌳 Learn: Trees, CO₂ & Climate", ln=True, align="C")
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("DejaVu", size=8)
+        self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
 if pdf_text:
-    pdf = FPDF()
+    pdf = PDF()
+    font_path = Path("app/DejaVuSans.ttf")  # adjust path if needed
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    pdf.add_font("DejaVu", "", str(font_path), uni=True)
+    pdf.set_font("DejaVu", size=12)
+
     for line in pdf_text.split("\n"):
-        pdf.multi_cell(0, 8, txt=line)
-    pdf_output = pdf.output(dest="S").encode("latin-1")
-    b64_pdf = base64.b64encode(pdf_output).decode("utf-8")
-    href = f'<a href="data:application/octet-stream;base64,{b64_pdf}" download="Learn_Tree_CO2_Education.pdf">📄 Click to Download this Page as PDF</a>'
-    st.markdown("---")
-    st.markdown(href, unsafe_allow_html=True)
+        pdf.multi_cell(0, 10, txt=line)
+
+    output_path = "/mnt/data/Learn_Tree_CO2_Education.pdf"
+    pdf.output(output_path)
+
+    with open(output_path, "rb") as f:
+        st.download_button(
+            label="📄 Download this Page as PDF",
+            data=f,
+            file_name="Learn_Tree_CO2_Education.pdf",
+            mime="application/pdf"
+        )
