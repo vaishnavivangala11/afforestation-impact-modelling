@@ -1,236 +1,237 @@
 import streamlit as st
 
-# ✅ This must be the very first Streamlit command
+# ✅ First Streamlit command
 st.set_page_config(page_title="Learn", page_icon="📘", layout="wide")
 
-# ✅ Now safe to call other Streamlit functions
+# ✅ Title
 st.title("📘 Learn: Trees, Climate & CO₂")
 
-# Sidebar navigation
+# ✅ Sidebar navigation
 st.sidebar.markdown("## 📚 Navigation")
 st.sidebar.page_link("streamlit_app.py", label="🏠 Home")
 st.sidebar.page_link("pages/Learn.py", label="📘 Learn")
 
-# Search
+# ✅ Search box
 search = st.text_input("🔍 Search a topic...", "").lower()
 
-# Educational Topics
+# ✅ Banner image (add your own image or use free URLs)
+st.image("https://images.unsplash.com/photo-1558944351-dae09f7d82e9", caption="🌳 Forests are Earth’s lungs", use_column_width=True)
+
+# ✅ Topics grouped by category with emojis
 topics = {
-    "CO₂ Topics": {
-        "How do trees absorb CO₂?": """
-Trees absorb CO₂ from the air using their leaves during photosynthesis.
-The CO₂ is stored in their roots, trunk, and branches as biomass.
+    "🌿 CO₂ Topics": {
+        "🌱 How do trees absorb CO₂?": """
+Trees absorb CO₂ from the air using leaves during photosynthesis.  
+That CO₂ gets stored in their roots, trunks, and branches as biomass.
 """,
-        "What is CO₂ sequestration?": """
-It means capturing and storing carbon dioxide from the air.
-Trees, plants, and soil all help in natural carbon sequestration.
+        "🌀 What is CO₂ sequestration?": """
+CO₂ sequestration means capturing and storing carbon dioxide from the air.  
+Trees, plants, and soil all help in this natural process.
 """,
-        "Why is CO₂ a greenhouse gas?": """
-CO₂ traps heat in the atmosphere, warming the planet.
-Human activities like burning fossil fuels increase CO₂ levels rapidly.
+        "🌡️ Why is CO₂ a greenhouse gas?": """
+CO₂ traps heat in the atmosphere, causing Earth to warm.  
+Fossil fuels and deforestation increase CO₂ levels rapidly.
 """,
-        "CO₂ Absorption Formula": """
-Formula: CO₂ = Age × CO₂_per_year × Survival Rate × Growth Factor  
-Example: 10 × 25 × 0.9 × 1.1 = 247.5 kg CO₂
+        "🧮 CO₂ Absorption Formula": """
+**Formula**: CO₂ = Age × CO₂_per_year × Survival Rate × Growth Factor  
+**Example**: 10 × 25 × 0.9 × 1.1 = 247.5 kg CO₂
 """,
-        "Why reducing CO₂ matters": """
-Excess CO₂ causes global warming and ocean acidification.
-Reducing CO₂ improves air quality and climate stability.
+        "🚨 Why reducing CO₂ matters": """
+Too much CO₂ leads to global warming and ocean acidification.  
+Reducing emissions improves air quality and climate stability.
 """,
-        "How much CO₂ does one tree absorb?": """
-On average, a mature tree can absorb 20–30 kg CO₂ per year.
-The amount varies by species, location, and age.
+        "🌳 How much CO₂ does one tree absorb?": """
+A mature tree can absorb **20–30 kg CO₂** per year.  
+It varies by species, age, and environment.
 """,
-        "Why is CO₂ harmful to the planet?": """
-CO₂ traps heat in the Earth’s atmosphere, causing global warming.
-Too much CO₂ from burning fossil fuels and deforestation leads to climate disruption.
+        "🆘 Why is CO₂ harmful to the planet?": """
+Excess CO₂ causes extreme weather, ice melting, and rising sea levels.  
+It disrupts ecosystems and biodiversity.
 """,
-
-        "Difference between carbon footprint and carbon sequestration": """
-A carbon footprint measures how much CO₂ a person or activity releases.
-Carbon sequestration refers to removing CO₂ from the atmosphere — often by trees.
+        "⚖️ Carbon footprint vs sequestration": """
+Carbon footprint = CO₂ **you emit**  
+Carbon sequestration = CO₂ **trees remove** from the air.
 """,
-
-        "How much CO₂ does a person emit per year?": """
-The average person globally emits about 4 to 5 tonnes of CO₂ per year.
-In urban areas, emissions can be higher due to vehicles, electricity, and construction.
+        "👣 Average person’s CO₂ emissions": """
+One person emits around **4–5 tonnes of CO₂** every year.  
+In cities, it's higher due to cars, electricity, and industry.
 """,
-
-        "Formula to calculate CO₂ sequestration by trees": """
-CO₂ absorbed = (CO₂_per_year × tree_age × survival_rate × growth_factor)
-This helps estimate carbon capture by species over time.
+        "📐 CO₂ sequestration by trees": """
+**Formula**:  
+CO₂ = CO₂/year × tree_age × survival_rate × growth_factor  
+This helps estimate carbon capture over time.
 """,
-
     },
 
-    "Climate Topics": {
-        "How do trees fight climate change?": """
-They remove CO₂, cool the air, and improve water cycles.
-Forests reduce heat and protect against extreme weather.
+    "🌎 Climate Topics": {
+        "🌲 How do trees fight climate change?": """
+They remove CO₂, release oxygen, and cool the planet.  
+Forests also protect against floods and droughts.
 """,
-        "What is afforestation?": """
-Afforestation means planting trees in a place where there were no previous forests.
-It helps increase green cover and reduce carbon levels.
+        "🪴 What is afforestation?": """
+Planting trees in a new area where there was no previous forest.  
+Helps increase green cover and reduce carbon levels.
 """,
-        "What is reforestation?": """
-It is the process of replanting trees in a deforested area.
-This helps restore ecosystems and biodiversity.
+        "🌳 What is reforestation?": """
+Replanting trees in deforested areas to restore biodiversity.  
+It brings life back to damaged ecosystems.
 """,
-        "What is a carbon sink?": """
-A carbon sink absorbs more carbon than it releases.
-Forests are natural carbon sinks that help fight climate change.
+        "🧲 What is a carbon sink?": """
+A place that absorbs more carbon than it releases.  
+Forests, oceans, and wetlands are natural carbon sinks.
 """,
-        "Why is biodiversity important?": """
-More species means better balance in nature.
-Forests with more biodiversity are more resilient to climate changes.
+        "🐾 Why is biodiversity important?": """
+More species means healthier ecosystems.  
+Diverse forests resist diseases and adapt to climate better.
 """,
-        "What is the greenhouse effect?": """
-The greenhouse effect keeps the Earth warm by trapping heat using gases like CO₂ and methane.
-Without it, Earth would be too cold — but excess gases cause global warming.
+        "🌤️ What is the greenhouse effect?": """
+It keeps Earth warm by trapping heat using gases like CO₂.  
+Too much CO₂ = global warming. Balance is key!
 """,
-
-        "How do forests cool cities?": """
-Trees provide shade and release water vapor through transpiration.
-This cools the surrounding air and reduces urban heat island effects.
+        "🏙️ How do forests cool cities?": """
+Trees provide shade and release water vapor.  
+This cools the air and lowers heat in urban areas.
 """,
-
-        "What are climate-resilient trees?": """
-These are tree species that survive extreme weather like drought or floods.
-Examples include Neem, Pongamia, and Indian Almond.
+        "💪 Climate-resilient trees": """
+Trees like Neem, Pongamia, and Indian Almond can survive heat, drought, or floods.
 """,
-
     },
 
-    "Forest Fires": {
-        "Why do forest fires occur?": """
-They can start naturally from lightning or human causes like campfires or discarded cigarettes.
-Dry weather and strong winds can quickly spread fires.
+    "🔥 Forest Fires": {
+        "⚡ Why do forest fires occur?": """
+They can start from lightning or human actions like campfires and waste burning.  
+Dry leaves and wind help fires spread fast.
 """,
-        "Impact of forest fires on CO₂": """
-Fires release stored CO₂ back into the air, harming the climate.
-They also destroy carbon sinks and affect air quality.
+        "🌫️ Impact of fires on CO₂": """
+Fires release stored CO₂ and destroy green cover.  
+Air pollution increases drastically.
 """,
-        "How to prevent forest fires?": """
-Avoid open fires in dry seasons and clear dry leaves.
-Planting fire-resistant species and awareness can help.
+        "🛑 How to prevent forest fires?": """
+Avoid burning waste near forests.  
+Create firebreaks, plant fire-resistant trees, and spread awareness.
 """,
-        "What are fire-resistant trees?": """
-Some trees like Neem, Tamarind resist burning due to thick bark or moisture.
-Using such trees can limit fire damage in sensitive zones.
+        "🔥 Fire-resistant trees": """
+Species like Neem, Banyan, and Tamarind resist fires better.  
+Thick bark and moisture help them survive.
 """,
-        "How to prevent forest fires?": """
-Avoid burning dry waste or leaves near forest areas.
-Creating firebreaks and planting fire-resistant species can reduce risk.
-""",
-
-        "What trees are resistant to fire?": """
-Some species like Banyan and Teak have thicker bark and higher moisture content.
-These trees survive better in fire-prone areas.
-""",
-
     },
 
-    "Tree Planting Tips": {
-        "Where should I plant a tree?": """
-Plant in places with sunlight, space, and access to water.
-Avoid areas with cement or pollution where roots can't grow.
+    "🌱 Tree Planting Tips": {
+        "📍 Where should I plant trees?": """
+Choose open spaces with sunlight, air, and water access.  
+Avoid planting too close to buildings or cemented ground.
 """,
-        "When is the best time to plant trees?": """
-The rainy season (June–August) is best for planting in India.
-It helps trees get established with natural moisture.
+        "⏰ Best time to plant trees?": """
+The **monsoon (June–August)** is ideal in India.  
+Rain helps young saplings grow strong roots.
 """,
-        "Why choose native species?": """
-Native trees are adapted to local soil and climate.
-They need less care and help protect local biodiversity.
+        "🌿 Why choose native trees?": """
+They are adapted to your local climate and soil.  
+Need less care and support local birds and animals.
 """,
-        "How to take care of young trees?": """
-Water regularly, protect with guards, and weed the base.
-The first two years are critical for tree survival.
+        "🛡️ How to care for young trees?": """
+Water weekly, protect with guards, and remove weeds.  
+First 2 years are crucial!
 """,
-        "When is the best time to plant a tree?": """
-The ideal season is during or just before the monsoon.
-This gives the young sapling time to grow roots with enough water.
+        "🧪 Mixed species or single?": """
+Mixed planting boosts biodiversity and reduces pest risks.  
+Each tree plays a unique ecological role.
 """,
-
-        "How to care for saplings in the first year?": """
-Water the saplings regularly and protect them from grazing animals.
-Use mulching to retain soil moisture and prevent weeds.
-""",
-
-        "Should I plant one species or mixed trees?": """
-Planting a mix of native species improves biodiversity and reduces disease risk.
-It also ensures different CO₂ absorption patterns and ecosystem roles.
-""",
-
     },
 
-    "Growth & Survival": {
-        "What is survival rate in afforestation?": """
-It's the percentage of trees that survive after planting.
-High survival means better success of the plantation.
+    "📈 Growth & Survival": {
+        "✅ What is survival rate?": """
+Percentage of trees that survive after planting.  
+Higher rate = more CO₂ absorbed.
 """,
-        "What is a tree’s growth factor?": """
-It shows how well a tree grows in its environment.
-Higher growth factor means more CO₂ is absorbed over time.
+        "📊 What is growth factor?": """
+Shows how well a tree grows in a local environment.  
+Used in CO₂ simulation formulas.
 """,
-        "Which trees grow faster?": """
-Species like Casuarina, Pongamia, and Subabul grow quickly.
-Fast-growing trees absorb more CO₂ in less time.
+        "🌱 Fast-growing trees": """
+Casuarina, Pongamia, and Subabul grow quickly.  
+They absorb CO₂ faster but may need more care.
 """,
-        "What reduces tree survival?": """
-Lack of water, grazing by animals, and poor soil lower survival.
-Regular care improves outcomes dramatically.
+        "💧 What reduces survival?": """
+Lack of water, animal grazing, and poor soil.  
+Regular care and guards improve survival.
 """,
-        "Why do some trees grow faster than others?": """
-Growth speed depends on genetics, water availability, sunlight, and soil quality.
-Fast-growing trees like Subabul absorb CO₂ quickly but may need more care.
+        "🌤️ Why growth speed varies": """
+Depends on sunlight, water, soil, and species genetics.  
+Local trees usually grow better in their native soil.
 """,
-
-        "How to increase tree survival rate?": """
-Choose native species, plant in the right season, and protect saplings from stress.
-Adding compost and regular watering in the first 2 years improves survival.
+        "🧴 How to increase survival?": """
+Use compost, mulch, and native species.  
+Water regularly and protect from animals.
 """,
-
     },
 
-    "Soil & Locations": {
-        "What is sandy loam soil?": """
-It's a mix of sand and silt, drains well, and is great for Neem or Amla trees.
-Common in many Indian villages and coastal areas.
+    "🧪 Soil & Locations": {
+        "🏖️ What is sandy loam?": """
+Mix of sand and silt. Drains well.  
+Good for Amla and Neem trees.
 """,
-        "Best trees for red soil?": """
-Red soil suits Tamarind, Pongamia, and Indian Almond.
-These trees grow well in warm, dry climates.
+        "🧱 Best trees for red soil": """
+Red soil suits Tamarind, Pongamia, and Indian Almond.  
+Warm and dry climate helps them thrive.
 """,
-        "Which soil is best for Teak?": """
-Teak prefers deep, well-drained black or red soil.
-It requires warm weather and good spacing.
+        "🌾 Soil for Teak": """
+Teak prefers deep, black or red soil.  
+Needs warmth and good drainage.
 """,
-        "Planting near coasts": """
-Use salt-tolerant species like Casuarina and Indian Almond.
-They protect coastal land and are wind-resistant.
+        "🌊 Coastal planting tips": """
+Use salt-tolerant species like Casuarina.  
+They resist wind and protect land from erosion.
 """,
-        "What is soil pH and why does it matter?": """
-Soil pH affects how nutrients are absorbed by trees.
-Most trees grow best in slightly acidic to neutral pH (6.0–7.5).
+        "🧪 What is soil pH?": """
+Soil pH affects how well trees absorb nutrients.  
+Ideal range: 6.0 to 7.5 for most trees.
+""",
+        "🧫 How to test soil?": """
+Use a test kit or lab.  
+Knowing soil type helps choose the right species.
+""",
+        "🪴 Which plant suits which soil?": """
+Neem: sandy/loamy soil  
+Banyan: well-drained fertile soil  
+Peepal: clayey/alluvial soil  
+Choose based on your local soil for best survival and CO₂ absorption.
+""",
+    }
+        "🌿 Innovative Climate Solutions": {
+        "🟢 What is Duckweed and how does it help?": """
+Duckweed is a tiny floating aquatic plant that **grows extremely fast** — it can double in size every 2–3 days! 🌊  
+It **absorbs CO₂ from water and air**, helps clean polluted water, and creates oxygen for aquatic life.
+
+**Fun Fact**: Duckweed can absorb **5–10x more CO₂ per area** than trees in certain conditions.  
+It is also used for biofuel, animal feed, and wastewater treatment.
+
+🖼️ ![Duckweed](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Lemna_minor_2.jpg/640px-Lemna_minor_2.jpg)
 """,
 
-        "How to test soil before planting?": """
-You can test soil manually or with a soil test kit.
-Knowing if it's clayey, sandy, or loamy helps match the right tree species.
-""",
-        "Which plant requires which soil type?": """
-Different plants thrive in different soil types based on their root structure and nutrient needs.  
-For example, Neem grows well in sandy or loamy soil, while Banyan prefers well-drained fertile soil.  
-Peepal does well in alluvial or clayey soil, and Indian Almond prefers moist, well-drained soil.  
-Always choose tree species that match your local soil type for best survival and CO₂ absorption.  
-Using local species adapted to your soil improves plantation success.
+        "🌾 What is Vetiver Grass and how does it help the planet?": """
+Vetiver is a **deep-rooted grass** known for preventing soil erosion and purifying water. Its roots can grow over 3 meters deep! 🌱  
+It **stores carbon in the soil**, strengthens land, and improves groundwater recharge.
+
+Vetiver is used in **slope protection, rainwater harvesting**, and even **aromatherapy** (essential oils).  
+It is drought-tolerant, native-friendly, and used in eco-restoration worldwide.
+
+🖼️ ![Vetiver](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Vetiver.jpg/800px-Vetiver.jpg)
 """,
 
+        "💡 Why include Duckweed & Vetiver in your afforestation model?": """
+Including Duckweed and Vetiver gives your project a **unique, innovative edge**.  
+These fast-growing, high-impact plants complement traditional tree planting.
+
+- Duckweed works in **wetlands, ponds, polluted water**
+- Vetiver is perfect for **slopes, erosion zones, drylands**
+
+Together, they fight **climate change + water pollution + land degradation**.
+""",
     }
 }
 
-# Display topics that match search
+# ✅ Display matching topics
 for section, items in topics.items():
     filtered = {q: a for q, a in items.items() if search in q.lower() or search in a.lower()}
     if filtered:
@@ -238,11 +239,3 @@ for section, items in topics.items():
         for question, answer in filtered.items():
             with st.expander(question):
                 st.markdown(answer)
-
-# Visual learning resources
-st.markdown("### 📹 Learn with Visuals")
-st.markdown("""
-- [🌿 How trees help with CO₂](https://www.youtube.com/watch?v=3pD68uxRLkM)
-- [🌱 Afforestation explained simply](https://www.youtube.com/watch?v=FtQjGPfkEe8)
-- [🔥 Causes of Forest Fires](https://www.youtube.com/watch?v=ZCVmAo5s3Xw)
-""")
