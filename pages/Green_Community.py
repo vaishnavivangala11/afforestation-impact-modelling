@@ -13,8 +13,13 @@ Your voice helps us improve and inspires others.
 Share your thoughts, feedback, or experience below. 💚
 """)
 
-# 📂 Feedback file
+# 📂 File to store feedback
 feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "feedback.csv")
+# ✅ Create the 'app/' folder if it doesn't exist
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
+
+
+# ✅ Ensure folder exists before writing
 os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
 
 # 📝 Feedback Form
@@ -46,55 +51,21 @@ if submit:
         updated.to_csv(feedback_file, index=False)
         st.success("✅ Thank you! Your feedback has been added to the Green Community wall below.")
 
-# 🌿 Show Feedback Count
-if os.path.exists(feedback_file):
-    df = pd.read_csv(feedback_file)
-    st.markdown(f"### 👥 Total Feedback Received: **{len(df)}**")
-
-# 🔐 Admin-only section (hidden until password entered)
-delete_mode = False
-admin_logged_in = False
-if "admin_auth" not in st.session_state:
-    st.session_state.admin_auth = False
-
-# Ask for password if not already logged in
-if not st.session_state.admin_auth:
-    with st.expander("🔒 Admin Login"):
-        admin_pass = st.text_input("Enter Admin Password", type="password")
-        if admin_pass == "Pikachu@05":
-            st.session_state.admin_auth = True
-            st.success("🛡️ Admin mode activated.")
-        elif admin_pass:
-            st.error("❌ Incorrect password")
-
-# 🌿 Show Feedback Wall
+# 🌿 Show Community Feedback
 st.markdown("## 💬 Community Wall – What Others Are Saying")
 
 if os.path.exists(feedback_file):
     df = pd.read_csv(feedback_file)
     df = df.sort_values("Timestamp", ascending=False)
-
-    indexes_to_delete = []
-
-    for index, row in df.iterrows():
+    
+    for _, row in df.iterrows():
         st.markdown(f"""
         <div style='background-color:#f4fff4;padding:10px;border-radius:8px;margin-bottom:10px'>
-            <strong>👤 {row['Name']}</strong><br>
-            ⭐ <b>Rating:</b> {row['Rating']} / 5  
+            <strong>👤 {row['Name']}</strong>  
+            ⭐ **Rating**: {row['Rating']} / 5  
             <p>{row['Feedback']}</p>
             <small>🕒 {row['Timestamp']}</small>
         </div>
         """, unsafe_allow_html=True)
-
-        # ✅ Show delete button only if admin is authenticated
-        if st.session_state.admin_auth:
-            if st.button(f"🗑️ Delete this feedback", key=str(index)):
-                indexes_to_delete.append(index)
-
-    # ✅ Delete selected feedbacks (admin only)
-    if indexes_to_delete:
-        df.drop(index=indexes_to_delete, inplace=True)
-        df.to_csv(feedback_file, index=False)
-        st.success("✅ Selected feedback(s) deleted. Please refresh the page.")
 else:
     st.info("No feedback yet. Be the first to share your thoughts!")
