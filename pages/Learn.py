@@ -108,46 +108,38 @@ By using local species data and simulating actual CO₂ absorption, this app emp
 """
     }
 }
-
-# Show filtered content
-pdf_text = ""
-for section, topics in lessons.items():
-    filtered = {k: v for k, v in topics.items() if search in k.lower() or search in v.lower()}
-    if filtered:
-        st.subheader(section)
-        pdf_text += f"\n\n{section}\n"
-        for title, content in filtered.items():
-            with st.expander(f"📘 {title}"):
-                st.markdown(content)
-            pdf_text += f"\n📘 {title}\n{content.strip()}\n"
-
 from fpdf import FPDF
 from pathlib import Path
 
-# PDF generation using fpdf2 with Unicode support
+# Create PDF class with proper Unicode font support
 class PDF(FPDF):
     def header(self):
-        self.set_font("DejaVu", size=14)
+        self.set_font("DejaVu", "", 14)
         self.cell(0, 10, "🌳 Learn: Trees, CO₂ & Climate", ln=True, align="C")
 
     def footer(self):
         self.set_y(-15)
-        self.set_font("DejaVu", size=8)
+        self.set_font("DejaVu", "", 8)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
 
+# Create the PDF only if content exists
 if pdf_text:
     pdf = PDF()
-    font_path = Path("app/DejaVuSans.ttf")  # adjust path if needed
-    pdf.add_page()
+    font_path = Path("app/DejaVuSans.ttf")  # Make sure this file exists
     pdf.add_font("DejaVu", "", str(font_path), uni=True)
-    pdf.set_font("DejaVu", size=12)
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("DejaVu", "", 12)
 
+    # Add all educational text line by line
     for line in pdf_text.split("\n"):
-        pdf.multi_cell(0, 10, txt=line)
+        pdf.multi_cell(0, 10, line)
 
+    # Save PDF to temporary path
     output_path = "/mnt/data/Learn_Tree_CO2_Education.pdf"
     pdf.output(output_path)
 
+    # Allow download
     with open(output_path, "rb") as f:
         st.download_button(
             label="📄 Download this Page as PDF",
@@ -155,3 +147,7 @@ if pdf_text:
             file_name="Learn_Tree_CO2_Education.pdf",
             mime="application/pdf"
         )
+
+
+
+
