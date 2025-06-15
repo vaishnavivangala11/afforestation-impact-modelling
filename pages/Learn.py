@@ -1,6 +1,7 @@
 import streamlit as st
 from fpdf import FPDF
 import base64
+import re
 
 # Page configuration
 st.set_page_config(page_title="Learn", page_icon="📘", layout="wide")
@@ -96,58 +97,48 @@ Planting even one tree helps reduce CO₂, clean the air, and improve water cycl
 """,
         "Supporting the SDGs": """
 This project supports **Sustainable Development Goals** like:
-- ✅ SDG 13: Climate Action  
-- ✅ SDG 15: Life on Land  
-- ✅ SDG 6: Clean Water  
-- ✅ SDG 3: Good Health  
-- ✅ SDG 1 & 8: No Poverty & Decent Work
+- SDG 13: Climate Action  
+- SDG 15: Life on Land  
+- SDG 6: Clean Water  
+- SDG 3: Good Health  
+- SDG 1 & 8: No Poverty & Decent Work
 """,
         "Local impact in East Godavari": """
 By using local species data and simulating actual CO₂ absorption, this app empowers individuals, schools, and communities to take action.
-**From better air to better jobs — every tree counts.**
+From better air to better jobs — every tree counts.
 """
     }
 }
-from fpdf import FPDF
-from pathlib import Path
 
-# Create PDF class with proper Unicode font support
-class PDF(FPDF):
-    def header(self):
-        self.set_font("DejaVu", "", 14)
-        self.cell(0, 10, "🌳 Learn: Trees, CO₂ & Climate", ln=True, align="C")
+# Show filtered content + build text for PDF
+pdf_text = ""
+for section, topics in lessons.items():
+    filtered = {k: v for k, v in topics.items() if search in k.lower() or search in v.lower()}
+    if filtered:
+        st.subheader(section)
+        pdf_text += f"\n\n{section}\n"
+        for title, content in filtered.items():
+            with st.expander(f"📘 {title}"):
+                st.markdown(content)
+            # Remove emojis from PDF text
+            clean_title = re.sub(r"[^\x00-\x7F]+", "", title)
+            clean_content = re.sub(r"[^\x00-\x7F]+", "", content)
+            pdf_text += f"\n{clean_title}\n{clean_content.strip()}\n"
 
-    def footer(self):
-        self.set_y(-15)
-        self.set_font("DejaVu", "", 8)
-        self.cell(0, 10, f"Page {self.page_no()}", align="C")
-
-# Create the PDF only if content exists
+# PDF download section
 if pdf_text:
-    pdf = PDF()
-    font_path = Path("app/DejaVuSans.ttf")  # Make sure this file exists
-    pdf.add_font("DejaVu", "", str(font_path), uni=True)
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("DejaVu", "", 12)
-
-    # Add all educational text line by line
+    pdf.set_font("Arial", size=12)
     for line in pdf_text.split("\n"):
-        pdf.multi_cell(0, 10, line)
-
-    # Save PDF to temporary path
-    output_path = "/mnt/data/Learn_Tree_CO2_Education.pdf"
-    pdf.output(output_path)
-
-    # Allow download
-    with open(output_path, "rb") as f:
-        st.download_button(
-            label="📄 Download this Page as PDF",
-            data=f,
-            file_name="Learn_Tree_CO2_Education.pdf",
-            mime="application/pdf"
-        )
-
+        pdf.multi_cell(0, 10, txt=line)
+    pdf_output = pdf.output(dest="S").encode("latin-1", errors="ignore")
+    b64_pdf = base64.b64encode(pdf_output).decode("utf-8")
+    st.markdown("---")
+    st.markdown(
+        f'<a href="data:application/octet-stream;base64,{b64_pdf}" download="Learn_Tree_CO2_Education.pdf">📄 Click to Download this Page as PDF</a>',
+        unsafe_allow_html=True
+    )
 
 
 
