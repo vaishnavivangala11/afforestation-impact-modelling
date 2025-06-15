@@ -113,24 +113,27 @@ else:
 with st.form("rating_form", clear_on_submit=True):
     fb_name = st.text_input("Your Name (Optional)", placeholder="Enter your name")
     fb_rating = st.slider("How would you rate this app?", 1, 5, 5)
-    fb_text = st.text_area("Feedback (Optional)", placeholder="Share your experience or suggestions...")
+    fb_text = st.text_area("Feedback", placeholder="Please share your experience or suggestions (required)...")
     fb_submit = st.form_submit_button("✅ Submit Feedback")
 
 # 💾 Save feedback + confirmation
 if fb_submit:
-    fb_entry = pd.DataFrame([{
-        "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "Name": fb_name if fb_name.strip() else "Anonymous",
-        "Rating": fb_rating,
-        "Feedback": fb_text
-    }])
-
-    if os.path.exists(feedback_file):
-        existing = pd.read_csv(feedback_file)
-        all_feedback = pd.concat([existing, fb_entry], ignore_index=True)
+    if fb_text.strip() == "":
+        st.warning("⚠️ Please provide feedback before submitting.")
     else:
-        all_feedback = fb_entry
+        fb_entry = pd.DataFrame([{
+            "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Name": fb_name if fb_name.strip() else "Anonymous",
+            "Rating": fb_rating,
+            "Feedback": fb_text
+        }])
 
-    all_feedback.to_csv(feedback_file, index=False)
-    st.success("✅ Your feedback has been received and recorded. We truly appreciate your thoughts! 🌿")
-    st.rerun()
+        if os.path.exists(feedback_file):
+            existing = pd.read_csv(feedback_file)
+            all_feedback = pd.concat([existing, fb_entry], ignore_index=True)
+        else:
+            all_feedback = fb_entry
+
+        all_feedback.to_csv(feedback_file, index=False)
+        st.success("✅ Your feedback has been received and recorded. We truly appreciate your thoughts! 🌿")
+        st.rerun()
