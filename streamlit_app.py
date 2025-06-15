@@ -5,12 +5,11 @@ import tempfile
 import os
 from fpdf import FPDF
 
-# ✅ Page config must be first Streamlit command
+# ✅ Page configuration
 st.set_page_config(page_title="Afforestation Impact – East Godavari", page_icon="🌳", layout="wide")
 
-# ✅ Load Excel file from app/ folder
-file_path = os.path.join(os.path.dirname(__file__), "local_species.xlsx")
-
+# ✅ Load Excel file from app folder
+file_path = os.path.join(os.path.dirname(__file__), "app/local_species.xlsx")
 df = pd.read_excel(file_path)
 
 # ✅ Title
@@ -23,15 +22,15 @@ tree = st.selectbox("Select a Tree Species", df["Tree Name"])
 age = st.slider("Enter Tree Age (in Years)", min_value=1, max_value=200)
 st.caption("ℹ️ Most trees absorb CO₂ effectively for 20–30 years. We allow up to 200 years for long-living species like Banyan or Peepal.")
 
-# 📊 Get selected tree row
+# 📊 Get selected tree data
 selected_tree = df[df["Tree Name"] == tree].iloc[0]
 survival_rate = selected_tree["Survival_rate"]
 growth_factor = selected_tree["Growth_factor"]
 adjusted_co2 = age * selected_tree["CO2_per_year_kg"] * survival_rate * growth_factor
-st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
 
-# ✅ Display CO2 & info
+st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
 st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
+
 with st.expander("🧮 How is this CO₂ value calculated? Click to see the formula"):
     st.markdown("""
     ### 🧾 **CO₂ Absorption Formula**
@@ -41,20 +40,13 @@ with st.expander("🧮 How is this CO₂ value calculated? Click to see the form
     ```
 
     #### ✅ Explanation:
-    - **CO₂ per year**: How much CO₂ this tree species absorbs annually (e.g., 22.1 kg/year for Neem).
+    - **CO₂ per year**: How much CO₂ this tree species absorbs annually.
     - **Tree Age**: Number of years you've selected.
     - **Survival Rate**: Likelihood the tree survives (e.g., 0.85 = 85%).
-    - **Growth Factor**: Adjustment based on tree’s growth rate and environmental fit (e.g., 1.0).
+    - **Growth Factor**: Adjustment based on tree’s growth rate and environmental fit.
 
     ---
-    #### 📌 **Example**:
-    For a Neem tree (CO₂/year = 22.1), age = 1, survival rate = 0.85, growth factor = 1.0:
-
-    ```
-    Total CO₂ = 22.1 × 1 × 0.85 × 1.0 = 18.78 kg
-    ```
-
-    This is a **realistic estimate** of how much carbon this tree can remove in that time. 🌍🌳
+    🌍 This is a **realistic estimate** of carbon removal by the tree over the selected period.
     """)
 
 st.info(f"🧪 **Soil Type:** {selected_tree['Soil_Type']}\n\n📍 **Best Place to Plant:** {selected_tree['Best_Place_to_Plant']}")
@@ -77,14 +69,14 @@ ax.set_ylabel("Cumulative CO₂ Captured (kg)")
 ax.set_title(f"CO₂ Capture by {selected_species} Over 20 Years")
 st.pyplot(fig)
 
+# 🌳 What If 1000 Trees
 st.markdown("### 🌳 What If Scenario: 1000 Plants Over 20 Years")
 
-years = list(range(1, 21))
+tree_row = df[df['Species'] == selected_tree['Species']]
 co2_absorption = []
 
-tree_row = df[df['Species'] == selected_tree]
 if not tree_row.empty:
-    rate = tree_row['CO2_Absorption_kg_per_year'].values[0]
+    rate = tree_row['CO2_per_year_kg'].values[0]
     max_age = tree_row['Max_Age'].values[0]
 
     for year in years:
@@ -94,21 +86,19 @@ if not tree_row.empty:
             total = rate * 1000 * max_age
         co2_absorption.append(total)
 
-    st.line_chart(co2_absorption)
-if selected_tree == "Duckweed":
-    st.info("💧 Duckweed grows in water bodies and absorbs CO₂ rapidly. Ideal for wetlands or wastewater treatment.")
-elif selected_tree == "Vetiver Grass":
-    st.info("🌾 Vetiver is great for erosion control and carbon in soil. Perfect for riverbanks and degraded lands.")
+    fig2, ax2 = plt.subplots()
+    ax2.plot(years, co2_absorption, marker='s', color='orange')
+    ax2.set_xlabel("Year")
+    ax2.set_ylabel("Total CO₂ Captured (kg)")
+    ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Years")
+    st.pyplot(fig2)
 
+    st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{co2_absorption[-1]:,.0f} kg** of CO₂ in 20 years.")
 
-fig2, ax2 = plt.subplots()
-ax2.plot(years, co2_1000_trees, marker='s', color='orange')
-ax2.set_xlabel("Year")
-ax2.set_ylabel("Total CO₂ Captured (kg)")
-ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Years")
-st.pyplot(fig2)
-
-st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{total_20_years:,.0f} kg** of CO₂ in 20 years.")
+    if selected_tree['Tree Name'] == "Duckweed":
+        st.info("💧 Duckweed grows in water bodies and absorbs CO₂ rapidly. Ideal for wetlands or wastewater treatment.")
+    elif selected_tree['Tree Name'] == "Vetiver Grass":
+        st.info("🌾 Vetiver is great for erosion control and carbon in soil. Perfect for riverbanks and degraded lands.")
 
 # 📄 PDF Report
 st.subheader("📄 Generate PDF Report")
@@ -122,11 +112,11 @@ if st.button("📄 Create and Download PDF Report"):
     pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
     pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
     pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
-    pdf.cell(200, 10, txt=f"CO₂ Absorbed by 1000 Trees in 20 years: {int(total_20_years):,} kg", ln=True)
+    pdf.cell(200, 10, txt=f"CO₂ Absorbed by 1000 Trees in 20 years: {int(co2_absorption[-1]):,} kg", ln=True)
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
         fig3, ax3 = plt.subplots()
-        ax3.plot(years, co2_1000_trees, marker='s', color='orange')
+        ax3.plot(years, co2_absorption, marker='s', color='orange')
         ax3.set_xlabel("Year")
         ax3.set_ylabel("Total CO₂ Captured (kg)")
         ax3.set_title(f"1000 {selected_species} Trees Over 20 Years")
@@ -169,8 +159,6 @@ By promoting tree planting using real local species, this project actively suppo
 
 - ✅ **SDG 1 & 8: No Poverty & Decent Work**  
   Tree plantation drives create jobs and improve rural livelihoods through nursery and forestry work.
-
-By combining science, local knowledge, and technology, our project promotes sustainability. 💚
 """)
 
 st.markdown("""
@@ -178,13 +166,10 @@ st.markdown("""
 ✅ From cleaner air to better jobs, every tree brings us one step closer to the SDGs.
 """)
 
-# ✅ Sidebar Navigation (correctly uses page_link)
+# ✅ Sidebar Navigation
 with st.sidebar:
     st.title("🌿 Navigation")
     st.markdown("[🏠 Home](./)")
     st.markdown("[📘 Learn](./Learn)")
     st.markdown("[🧠 Quiz](./Quiz)")
     st.markdown("[🌱 Green Community](./Green_Community)")
-
-
-   
