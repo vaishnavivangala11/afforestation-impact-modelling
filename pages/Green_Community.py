@@ -4,23 +4,29 @@ import os
 from datetime import datetime
 import uuid
 
-# 📄 File to store chat messages
+# 📄 File to store chat messages and feedback
 chat_file = os.path.join(os.path.dirname(__file__), "..", "app", "community_chat.csv")
+feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "community_feedback.csv")
 os.makedirs(os.path.dirname(chat_file), exist_ok=True)
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
 
 # 🌐 Page configuration
-st.set_page_config(page_title="💬 Community Chat Wall", page_icon="💭")
-st.title("💬 Community Chat Wall")
+st.set_page_config(page_title="💬 Green Community Chat", page_icon="🌿")
+st.title("💬 Green Community Chat Wall")
 
+# 🌱 Friendly intro box
 st.markdown("""
-Let's grow conversations like tree branches! 🌱  
-Post your messages and reply to others — with emojis too! 😊🌳❤️  
-""")
+<div style='background-color:#e8f5e9; padding: 15px; border-radius: 10px; border-left: 5px solid #66bb6a'>
+    <h4>🌱 Let’s grow conversations like tree branches!</h4>
+    <p>Every message adds a leaf to our community tree. 🌳💬<br>
+    Feel free to express yourself and reply with love and knowledge. 🌿❤️</p>
+</div>
+""", unsafe_allow_html=True)
 
 # 📝 Main message form
 with st.form("main_chat_form", clear_on_submit=True):
     user = st.text_input("Your Name", placeholder="Type your name 😊", max_chars=30)
-    message = st.text_area("Your Message", placeholder="Write something... use emojis like 🌳❤️🔥", max_chars=500)
+    message = st.text_area("Your Message", placeholder="Write something here... 🌱", max_chars=500)
     send = st.form_submit_button("📨 Post Message")
 
 # 💾 Load or create chat DataFrame
@@ -62,7 +68,7 @@ def display_messages(df, parent_id="", level=0):
         with st.expander(f"{'↪️' if level == 0 else '🔁'} Reply to {row['User']}"):
             with st.form(f"reply_form_{row['ID']}", clear_on_submit=True):
                 reply_user = st.text_input("Your Name", placeholder="Your name 😊", key=f"user_{row['ID']}")
-                reply_msg = st.text_area("Your Reply", placeholder="Write a reply with emojis! 💬🌱", key=f"msg_{row['ID']}")
+                reply_msg = st.text_area("Your Reply", placeholder="Write your reply here 🌿", key=f"msg_{row['ID']}")
                 reply_submit = st.form_submit_button("Reply")
                 if reply_submit:
                     if reply_user.strip() and reply_msg.strip():
@@ -89,3 +95,32 @@ if not chat_df.empty:
     display_messages(chat_df)
 else:
     st.info("No messages yet. Be the first to start a conversation! 😊")
+
+
+# 🌟 Feedback & Rating Section
+st.markdown("---")
+st.markdown("## 🙋‍♀️ Rate This Community Experience")
+
+with st.form("rating_form", clear_on_submit=True):
+    fb_name = st.text_input("Your Name (Optional)", placeholder="Enter your name")
+    fb_rating = st.slider("How would you rate this page?", 1, 5, 5)
+    fb_text = st.text_area("Feedback (Optional)", placeholder="Share your experience or suggestions...")
+    fb_submit = st.form_submit_button("✅ Submit Feedback")
+
+# 💾 Save feedback
+if fb_submit:
+    fb_entry = pd.DataFrame([{
+        "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "Name": fb_name if fb_name.strip() else "Anonymous",
+        "Rating": fb_rating,
+        "Feedback": fb_text
+    }])
+
+    if os.path.exists(feedback_file):
+        existing = pd.read_csv(feedback_file)
+        all_feedback = pd.concat([existing, fb_entry], ignore_index=True)
+    else:
+        all_feedback = fb_entry
+
+    all_feedback.to_csv(feedback_file, index=False)
+    st.success("🎉 Thank you for your feedback!")
