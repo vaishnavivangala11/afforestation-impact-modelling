@@ -30,6 +30,7 @@ adjusted_co2 = age * selected_tree["CO2_per_year_kg"] * survival_rate * growth_f
 
 st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
 st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
+st.info(f"🕰️ Max Age for {tree}: {selected_tree['Max_Age']} years")
 
 with st.expander("🧮 How is this CO₂ value calculated? Click to see the formula"):
     st.markdown("""
