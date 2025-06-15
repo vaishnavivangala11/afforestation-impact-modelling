@@ -137,27 +137,26 @@ if st.button("📄 Create and Download PDF Report"):
 st.subheader("🗺️ East Godavari Map")
 map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
 st.map(map_df, zoom=9)
-st.subheader("📘 Case Studies: Real Impact Examples")
+st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
 
-with st.expander("🌿 Neem Trees in East Godavari (10 years)"):
+with st.expander("📊 Can Trees & Plants Really Capture That Much CO₂?"):
     st.markdown("""
-- **1,000 Neem trees × 10 years**  
-- CO₂ absorbed = **212.5 tons**  
-- 🌳 Great for schools, village edges, and parks.
-""")
+**❓ What if we plant 1,000 Neem trees in East Godavari?**  
+✅ Over 10 years, they can absorb **212.5 tons of CO₂**!  
+🌳 Plus, they offer shade, clean air, and biodiversity support.
 
-with st.expander("🪴 Duckweed in a 1-Acre Pond (2 years)"):
-    st.markdown("""
-- Rapid-growing aquatic plant  
-- CO₂ removed = **~10 tons**  
-- 💧 Perfect for ponds, tanks, and wastewater areas.
-""")
+**❓ Can a small water pond help climate action?**  
+✅ Yes! A 1-acre pond filled with fast-growing **duckweed** can remove up to **10 tons of CO₂** in just 2 years.  
+🪴 Duckweed also cleans water and grows rapidly.
 
-with st.expander("🌾 Vetiver Grass on Slopes (15 years)"):
-    st.markdown("""
-- **500 vetiver rows** stabilize land and absorb CO₂  
-- CO₂ stored = **8.1 tons**  
-- 🛡️ Prevents erosion on bunds, hills, and roadsides.
+**❓ What can we plant on dry slopes or bunds?**  
+✅ **Vetiver grass** is ideal. 500 rows can store **8.1 tons of CO₂** in 15 years.  
+🌾 It prevents erosion and thrives in poor soil with little water.
+
+---
+
+🌿 These real-life cases show how small actions in local spaces can make a big climate difference.  
+Let’s plant smart — and grow impact!
 """)
 
 # 🌍 SDG Text
