@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Page configuration
+# Page setup
 st.set_page_config(page_title="Learn", page_icon="📘", layout="wide")
 
 st.title("📘 Learn: Trees, CO₂ & Climate Solutions")
@@ -14,119 +14,200 @@ st.sidebar.page_link("pages/Learn.py", label="📘 Learn")
 # Search bar
 search = st.text_input("🔍 Search a topic...", "").lower()
 
-# Educational content grouped by theme
+# Educational content grouped by themes
 lessons = {
     "🌍 CO₂ & Climate Science": {
         "How trees help reduce CO₂ levels": """
-Trees absorb carbon dioxide (CO₂) through photosynthesis. The gas is stored in their trunk, branches, leaves, and roots as biomass. Planting trees directly removes CO₂ from the atmosphere and helps fight climate change.
+🌳 Trees absorb carbon dioxide (CO₂) through photosynthesis and store it in their biomass. They are nature’s carbon sinks that help cool the planet.
 """,
         "The greenhouse effect and global warming": """
-CO₂ and other gases trap heat in Earth’s atmosphere. This natural greenhouse effect keeps Earth warm, but too much CO₂ causes excessive warming, sea-level rise, and extreme weather.
+🌡️ CO₂ traps heat in the atmosphere, warming the planet. Too much of it causes sea-level rise, extreme weather, and ecosystem imbalance.
 """,
         "Understanding CO₂ sequestration": """
-Sequestration means long-term storage of CO₂. Trees, soil, wetlands, and grasslands act as carbon sinks. Growing more plants increases Earth’s ability to store carbon safely.
-""",
-        "Why reducing CO₂ is urgent": """
-High CO₂ levels harm the planet by changing weather patterns, melting glaciers, and heating oceans. Every ton of CO₂ removed helps restore balance and protect life on Earth.
+🧮 **CO₂ sequestration** means storing carbon for a long time. Trees, soil, duckweed, vetiver, and grasslands naturally capture and store carbon.
 """,
         "CO₂ Absorption Formula": """
-**Formula:**  
+🧾 **Formula:**  
 `CO₂ = Age × CO₂_per_year × Survival Rate × Growth Factor`  
-**Example:** A Neem tree with 1-year age = `1 × 25 × 0.85 × 1.0 = 21.25 kg CO₂`  
-This formula estimates CO₂ captured based on tree species and growth conditions.
+📌 Example: A Neem tree with 1-year age: `1 × 25 × 0.85 × 1.0 = 21.25 kg CO₂`
+""",
+        "Why reducing CO₂ is urgent": """
+⏳ High CO₂ levels lead to climate disasters. Every tree and plant reduces carbon burden and helps stabilize climate.
 """
     },
 
     "🌱 Tree Planting & Afforestation": {
         "What is afforestation and reforestation": """
-Afforestation means planting trees in areas where there were no forests before. Reforestation is restoring lost forests. Both play a major role in increasing green cover and reversing damage from deforestation.
+🌲 **Afforestation** is planting trees where there were none before.  
+🌳 **Reforestation** is replanting lost forests. Both restore ecosystems.
 """,
-        "Benefits of planting native species": """
-Native trees grow well in local conditions, need less water, and support local birds, insects, and soil. Neem, Peepal, Pongamia, and Indian Almond are good native choices in East Godavari.
+        "Benefits of native species": """
+🪵 Local species like Neem, Peepal, and Pongamia grow faster, survive better, and support biodiversity in East Godavari.
 """,
-        "Tree growth and CO₂ absorption": """
-Trees grow at different rates. Fast-growing trees like Subabul and Pongamia absorb more CO₂ quickly, while long-living trees like Banyan store carbon over many decades.
+        "Tree growth and CO₂ capture": """
+🌿 Fast-growing trees like Subabul absorb more CO₂ quickly. Long-living trees like Banyan store carbon for decades.
 """,
-        "How to care for saplings": """
-Protect young trees with guards, water them regularly, and mulch the base to retain moisture. The first 2 years are crucial for survival and strong roots.
+        "Caring for saplings": """
+💧 Protect with guards, water regularly, and mulch around roots.  
+🕊️ First 2 years are critical for healthy growth.
 """
     },
+        "🔥 Deforestation & Its Impact": {
+        "What is deforestation?": """
+🪓 Deforestation is the cutting down of forests for farming, roads, or cities. It reduces biodiversity, harms the climate, and removes vital carbon sinks.
+""",
+        "Main causes of deforestation": """
+🚜 Farming (like palm oil, soy, and cattle),  
+🛣️ Urban expansion,  
+🪵 Logging for timber,  
+🔥 Forest fires — all reduce green cover.
+""",
+        "How deforestation affects climate": """
+🌡️ Fewer trees = more CO₂ in the air.  
+No forests = less rainfall, hotter temperatures, soil erosion, and more floods.
+""",
+        "How afforestation helps reverse it": """
+🌱 Planting new trees in deforested areas helps restore balance. It brings back wildlife, cools the land, and stores carbon again.
+"""
+    },
+    # 🌿 Climate & Community Topics
+st.subheader("🌿 Climate & Community Topics")
 
-    "🪴 Duckweed – Tiny Plant, Massive Impact": {
+with st.expander("🌡️ Urban Heat Islands & Cooling Trees"):
+    st.markdown("""
+Trees cool cities by shading surfaces and releasing moisture.  
+More greenery means lower temperatures and healthier living.
+""")
+
+with st.expander("💨 Trees Improve Air Quality"):
+    st.markdown("""
+Leaves absorb pollutants and trap dust from the air.  
+Neem and Peepal work like nature’s air purifiers.
+""")
+
+with st.expander("💧 Tree Roots Save Water"):
+    st.markdown("""
+Roots slow down water loss and boost groundwater.  
+Forests protect rivers, lakes, and village tanks.
+""")
+
+with st.expander("🐝 Biodiversity from Tree Planting"):
+    st.markdown("""
+Trees give shelter to birds, bees, and small animals.  
+Afforestation restores habitats and supports wildlife.
+""")
+
+with st.expander("🧒 Youth in Tree Missions"):
+    st.markdown("""
+Students planting trees build eco-awareness.  
+Schools and rural paths make great planting zones.
+""")
+
+with st.expander("📊 CO₂ Monitoring with Tech"):
+    st.markdown("""
+Apps and GPS help track tree-based carbon capture.  
+Digital tools make afforestation smarter and transparent.
+""")
+
+with st.expander("🧭 Agroforestry: Trees on Farms"):
+    st.markdown("""
+Farms with trees yield more and resist drought.  
+Vetiver and native trees protect soil and boost income.
+""")
+
+with st.expander("🔥 Preventing Forest Fires"):
+    st.markdown("""
+Fires start due to dry weather and human activity.  
+Planting fire-resistant species reduces risk naturally.
+""")
+
+with st.expander("📜 Forest Laws & Green Missions"):
+    st.markdown("""
+India supports afforestation through legal programs.  
+Green India Mission and CAMPA offer tree-planting support.
+""")
+
+with st.expander("🌾 Jobs from Tree Planting"):
+    st.markdown("""
+Tree projects create rural employment in nurseries and care.  
+Women, SHGs, and youth groups benefit the most.
+""")
+ "🪴 Duckweed – Tiny Plant, Big Impact": {
         "Duckweed and CO₂ removal": """
-Duckweed is one of the world’s fastest-growing aquatic plants. It absorbs CO₂ from both water and air and doubles in size every 1–2 days under ideal conditions.
+🪴 Duckweed is a super-fast-growing aquatic plant that absorbs CO₂ rapidly. It doubles every 1–2 days under good conditions.
 """,
-        "Duckweed as a climate solution": """
-Duckweed grows on ponds and helps in carbon capture, water purification, and even biofuel production. It can absorb CO₂ like fast-growing trees in a fraction of the time.
+        "Duckweed’s climate role": """
+🌊 Duckweed purifies water, stores carbon, and produces biofuel. It’s one of the most efficient natural CO₂ absorbers.
 """,
-        "Where duckweed grows best": """
-Duckweed thrives in still freshwater ponds, tanks, and village lakes. It can be grown near farms and reused as animal feed or compost.
+        "Where duckweed thrives": """
+🏞️ Duckweed grows in freshwater ponds, tanks, and lakes. It’s perfect for rural water bodies near farmlands.
 """
     },
 
     "🌾 Vetiver Grass – A Green Protector": {
         "Vetiver for CO₂ absorption": """
-Vetiver is a deep-rooted grass that captures CO₂ underground in its long roots. It helps sequester carbon and stabilizes soil in degraded lands.
+🌾 Vetiver’s deep roots capture CO₂ underground and prevent soil erosion. It improves land and stores carbon in the root zone.
 """,
         "Why vetiver is climate-smart": """
-It survives drought, floods, and poor soil, making it ideal for India's changing climate. Vetiver improves soil fertility and prevents erosion.
+🔥 Drought and flood resistant. Vetiver grows in degraded soils and harsh climates. Ideal for India's changing weather patterns.
 """,
-        "Uses beyond CO₂": """
-Vetiver roots are used in perfumes, mats, and medicines. It filters wastewater and is often planted near highways, canals, and hillsides for protection.
+        "Vetiver's extra uses": """
+💧 Used in perfumes, medicine, erosion control, and water treatment. Planted near roads, canals, and hills.
 """
     },
 
     "🧪 Soil & Growth Factors": {
-        "Importance of soil type in tree growth": """
-The type of soil affects how well a tree absorbs water and nutrients. Sandy loam is ideal for Neem and Amla, while red soil suits Tamarind and Indian Almond.
+        "Soil types and tree health": """
+🌱 Soil affects root strength, water retention, and nutrient absorption. Neem loves sandy loam. Tamarind likes red soil.
 """,
-        "What is soil pH?": """
-Soil pH affects how easily nutrients are absorbed by roots. Most trees grow well in slightly acidic to neutral soils (pH 6.0 to 7.5).
+        "Understanding soil pH": """
+🧪 Ideal soil pH is between 6.0–7.5. It helps nutrients flow to roots. Test your soil before large planting.
 """,
-        "Survival rate and growth factor": """
-Survival rate measures how many trees remain alive after planting. Growth factor shows how quickly they grow. Both affect total CO₂ captured.
+        "Survival & growth factor": """
+✅ Survival rate = how many trees survive.  
+📈 Growth factor = how fast they grow. Both impact total CO₂ absorption.
 """
     },
 
     "🌿 Why This Project Matters": {
-        "Your tree, your climate action": """
-Planting even one tree helps reduce CO₂, clean the air, and improve water cycles. Imagine the impact of 1,000 trees planted in your village or school!
+        "Your role in climate action": """
+🧍 One tree planted = less CO₂, better air, more life.  
+🌱 1,000 trees = real change in your school, village, or city.
 """,
         "Supporting the SDGs": """
-This project supports **Sustainable Development Goals** like:
+🎯 This project aligns with:  
 - ✅ SDG 13: Climate Action  
 - ✅ SDG 15: Life on Land  
 - ✅ SDG 6: Clean Water  
-- ✅ SDG 3: Good Health  
-- ✅ SDG 1 & 8: No Poverty & Decent Work
+- ✅ SDG 3: Health  
+- ✅ SDG 1 & 8: No Poverty & Work
 """,
-        "Local impact in East Godavari": """
-By using local species data and simulating actual CO₂ absorption, this app empowers individuals, schools, and communities to take action.  
-**From better air to better jobs — every tree counts.**
+        "East Godavari impact": """
+📍 Using real local tree data, this app lets anyone—from students to farmers—understand their impact.  
+From planting to carbon math — knowledge grows action.
 """
     }
 }
 
-# Show filtered content
-pdf_text = ""
+# Show lessons based on search
 for section, topics in lessons.items():
     filtered = {k: v for k, v in topics.items() if search in k.lower() or search in v.lower()}
     if filtered:
         st.subheader(section)
-        pdf_text += f"\n\n{section}\n"
         for title, content in filtered.items():
             with st.expander(f"📘 {title}"):
                 st.markdown(content)
-            pdf_text += f"\n📘 {title}\n{content.strip()}\n"
 
-# ✅ Download as .txt instead of PDF (avoids Unicode errors completely)
-if pdf_text:
-    st.markdown("---")
-    st.markdown("📄 **Download all visible content as a text file:**")
-
-    st.download_button(
-        label="📥 Download Learnings as .txt",
-        data=pdf_text,
-        file_name="Tree_CO2_Learnings.txt",
-        mime="text/plain"
-    )
+# 🌟 Footer Message
+st.markdown("---")
+st.markdown(
+    """
+    <div style='text-align: center; padding: 20px; font-size: 18px; color: green;'>
+        🌿 Thank you for learning with us! Every tree you plant makes our planet greener.  
+        Let's grow knowledge and forests together. 💚  
+        <br><br>
+        — Your Tree Impact Team
+    </div>
+    """,
+    unsafe_allow_html=True
+)
