@@ -99,39 +99,46 @@ if not tree_row.empty:
         st.info("💧 Duckweed grows in water bodies and absorbs CO₂ rapidly. Ideal for wetlands or wastewater treatment.")
     elif selected_tree['Tree Name'] == "Vetiver Grass":
         st.info("🌾 Vetiver is great for erosion control and carbon in soil. Perfect for riverbanks and degraded lands.")
-
-# 📄 PDF Report
+        # 📄 PDF Report
 st.subheader("📄 Generate PDF Report")
 if st.button("📄 Create and Download PDF Report"):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=16)
     pdf.cell(200, 10, txt="Afforestation CO₂ Report", ln=True, align='C')
+    
     pdf.set_font("Arial", size=12)
     pdf.ln(10)
     pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
     pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
     pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
-    pdf.cell(200, 10, txt=f"CO₂ Absorbed by 1000 Trees in 20 years: {int(co2_absorption[-1]):,} kg", ln=True)
+    pdf.cell(200, 10, txt=f"CO₂ Absorbed by 1000 Trees in 20 Years: {int(co2_absorption[-1]):,} kg", ln=True)
 
+    # Save graph as image for PDF
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
         fig3, ax3 = plt.subplots()
         ax3.plot(years, co2_absorption, marker='s', color='orange')
         ax3.set_xlabel("Year")
         ax3.set_ylabel("Total CO₂ Captured (kg)")
         ax3.set_title(f"1000 {selected_species} Trees Over 20 Years")
+        fig3.tight_layout()
         fig3.savefig(tmpfile.name)
         plt.close(fig3)
-        pdf.image(tmpfile.name, x=10, y=80, w=180)
-    try:
-        os.remove(tmpfile.name)
-    except:
-        pass
+        pdf.image(tmpfile.name, x=10, y=60, w=180)  # move image up to avoid overlap
+        os.remove(tmpfile.name)  # Clean up
 
+    # Save and offer PDF
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as pdf_file:
         pdf.output(pdf_file.name)
         with open(pdf_file.name, "rb") as f:
-            st.download_button("⬇️ Download PDF Report", f, file_name="afforestation_report.pdf", mime="application/pdf")
+            st.download_button(
+                "⬇️ Download PDF Report", 
+                f, 
+                file_name="afforestation_report.pdf", 
+                mime="application/pdf"
+            )
+
+
 
 # 🗺️ Map
 st.subheader("🗺️ East Godavari Map")
