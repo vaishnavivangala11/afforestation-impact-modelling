@@ -32,7 +32,7 @@ with st.sidebar:
     st.markdown("[🌱 Green Community](./Green_Community)")
 
 # ✅ Load Excel data
-file_path = os.path.join(os.path.dirname(__file__), "local_species.xlsx")
+file_path = os.path.join(os.path.dirname(__file__), "app", "local_species.xlsx")
 df = pd.read_excel(file_path)
 
 # ✅ Title
@@ -153,17 +153,20 @@ st.subheader("🗺️ East Godavari Map")
 map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
 st.map(map_df, zoom=9)
 
-# 🌍 SDG Impact as expandable
-with st.expander("🌍 Sustainable Development Goals (SDG) Impact"):
-    st.markdown("""
-### 🎯 Supported SDGs
+# 🌍 SDG Impact – original format
+st.subheader("🌍 SDG Impact: How Your Action Supports the Planet")
+st.markdown("""
+Planting trees and native species doesn't just remove CO₂—it supports multiple Sustainable Development Goals:
 
-- ✅ **SDG 13: Climate Action** – CO₂ removal from air  
-- ✅ **SDG 15: Life on Land** – Forest cover, biodiversity  
-- ✅ **SDG 6: Clean Water** – Water retention, pond life  
-- ✅ **SDG 3: Good Health** – Clean air, shade, well-being  
-- ✅ **SDG 1 & 8: No Poverty & Jobs** – Tree planting, nurseries, green jobs  
+- ✅ **SDG 13: Climate Action** – Trees capture CO₂, reduce warming  
+- ✅ **SDG 15: Life on Land** – Restores biodiversity and greenery  
+- ✅ **SDG 6: Clean Water** – Helps recharge groundwater, prevents runoff  
+- ✅ **SDG 3: Good Health** – Improves air quality, mental wellness  
+- ✅ **SDG 1 & 8: No Poverty & Jobs** – Creates rural jobs via nurseries and planting missions  
+
+> *Every sapling planted brings us closer to a greener, safer, and more sustainable future.*
 """)
 
+# 🌿 Footer
+st.markdown("----")
 st.markdown("🌳 *Your simple act of planting a tree supports global goals and local futures.*")
-
