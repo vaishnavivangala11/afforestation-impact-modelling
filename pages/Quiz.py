@@ -3,33 +3,32 @@ import pandas as pd
 from datetime import datetime
 import pathlib
 
-# 📱 Mobile-friendly sidebar tip
+# ✅ Must be first Streamlit command
+st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
+
+# ✅ Mobile-friendly sidebar tip
 st.markdown("""
 <div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
     🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> at the top-left to navigate to <em>Learn</em>, <em>Quiz</em>, or <em>Green Community</em>!
 </div>
 """, unsafe_allow_html=True)
 
-# Page config
-st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
-
 st.title("🧠 Mini Quiz: CO₂ & Trees")
 st.caption("Test your knowledge about afforestation and carbon sequestration!")
 
-# Ask for name before starting
+# 👉 Ask for name before starting
 name = st.text_input("👤 Enter your name to begin the quiz:")
 if not name:
     st.warning("Please enter your name to start the quiz.")
     st.stop()
 
-# Start Quiz
 if st.button("▶️ Start Quiz"):
     st.session_state.quiz_started = True
 
 if "quiz_started" not in st.session_state or not st.session_state.quiz_started:
     st.stop()
 
-# ----------------------- Quiz Questions -----------------------
+# ✅ Quiz Questions
 questions = [
     {"q": "What gas do trees absorb from the atmosphere?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"], "answer": "Carbon Dioxide"},
     {"q": "Which part of the tree is mainly responsible for photosynthesis?", "options": ["Roots", "Stem", "Leaves", "Bark"], "answer": "Leaves"},
@@ -52,11 +51,12 @@ st.markdown("### Choose the correct answer for each question:")
 user_answers = {}
 score = 0
 
+# 📝 Quiz UI
 for i, q in enumerate(questions, 1):
     all_options = ["Select an answer"] + q["options"]
     user_answers[i] = st.radio(f"Q{i}: {q['q']}", all_options, key=f"q{i}")
 
-# ------------------------ Submit Quiz ------------------------
+# ✅ Submit Button
 if st.button("✅ Submit Quiz"):
     st.markdown("---")
     for i, q in enumerate(questions, 1):
@@ -70,7 +70,7 @@ if st.button("✅ Submit Quiz"):
         else:
             st.error(f"❌ Q{i}: Incorrect. Correct answer: {correct}")
 
-    # Log submission (name + timestamp only)
+    # ✅ Save name + timestamp to CSV
     try:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         entry = pd.DataFrame([{"Name": name, "Timestamp": timestamp}])
@@ -89,7 +89,7 @@ if st.button("✅ Submit Quiz"):
         updated.to_csv(quiz_log_file, index=False)
         st.success("📝 Your participation has been recorded. Thank you!")
     except Exception as e:
-        st.error(f"⚠️ Error saving your submission: {e}")
+        st.error(f"Error saving your submission: {e}")
 
     st.balloons()
     st.markdown("🎉 Excellent! You're part of the green future!")
