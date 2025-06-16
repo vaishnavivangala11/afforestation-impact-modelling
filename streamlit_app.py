@@ -123,6 +123,27 @@ if st.button("📄 Create and Download PDF Report"):
         pdf.output(pdf_file.name)
         with open(pdf_file.name, "rb") as f:
             st.download_button("⬇️ Download PDF Report", f, file_name="afforestation_report.pdf", mime="application/pdf")
+            st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
+
+with st.expander("📊 Can Trees & Plants Really Capture That Much CO₂?"):
+    st.markdown("""
+**❓ What if we plant 1,000 Neem trees in East Godavari?**  
+✅ Over 10 years, they can absorb **212.5 tons of CO₂**!  
+🌳 Plus, they offer shade, clean air, and biodiversity support.
+
+**❓ Can a small water pond help climate action?**  
+✅ Yes! A 1-acre pond filled with fast-growing **duckweed** can remove up to **10 tons of CO₂** in just 2 years.  
+🪴 Duckweed also cleans water and grows rapidly.
+
+**❓ What can we plant on dry slopes or bunds?**  
+✅ **Vetiver grass** is ideal. 500 rows can store **8.1 tons of CO₂** in 15 years.  
+🌾 It prevents erosion and thrives in poor soil with little water.
+
+---
+
+🌿 These real-life cases show how small actions in local spaces can make a big climate difference.  
+Let’s plant smart — and grow impact!
+""")
 
 # 🗺️ Map
 st.subheader("🗺️ East Godavari Map")
