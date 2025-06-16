@@ -101,49 +101,37 @@ ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Ye
 st.pyplot(fig2)
 
 st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{total_20_years:,.0f} kg** of CO₂ in 20 years.")
+# 📄 Generate PDF report
+st.subheader("📄 Generate PDF Report")
 if st.button("📄 Create and Download PDF Report"):
     try:
-        from fpdf import FPDF
-        import tempfile
-        import os
-        import matplotlib.pyplot as plt
-
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=16)
         pdf.cell(200, 10, txt="Afforestation CO2 Report", ln=True, align='C')
 
-        # Tree Info (NO emojis!)
         pdf.set_font("Arial", size=12)
         pdf.ln(10)
         pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
         pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
         pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
-        pdf.cell(200, 10, txt=f"Growth Factor: {float(growth):.2f}", ln=True)
-        pdf.cell(200, 10, txt=f"Survival Rate: {float(survival):.2f}", ln=True)
         pdf.cell(200, 10, txt=f"CO2 Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
 
-        # Plot Chart and Add
+        # Save plot as image
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
-            fig, ax = plt.subplots()
-            ax.plot(years, co2_1000_trees, marker='s', color='orange')
-            ax.set_xlabel("Year")
-            ax.set_ylabel("Total CO2 Captured (kg)")
-            ax.set_title(f"1000 {selected_species} Trees Over 20 Years")
-            fig.tight_layout()
-            fig.savefig(tmp_img.name)
-            plt.close(fig)
-            pdf.image(tmp_img.name, x=10, y=100, w=180)
+            fig3, ax3 = plt.subplots()
+            ax3.plot(years, co2_1000_trees, marker='s', color='orange')
+            ax3.set_xlabel("Year")
+            ax3.set_ylabel("CO2 Captured (kg)")
+            ax3.set_title(f"1000 {selected_species} Trees Over 20 Years")
+            fig3.tight_layout()
+            fig3.savefig(tmp_img.name)
+            plt.close(fig3)
+            pdf.image(tmp_img.name, x=10, y=80, w=180)
+            os.remove(tmp_img.name)
 
-        # Add quote (NO emojis or fancy quotes!)
-        pdf.set_y(-40)
-        pdf.set_font("Arial", 'I', 11)
-        quote = "One tree can start a forest, one hand can lift a soul. Plant trees, grow hope."
-        pdf.multi_cell(0, 10, txt=quote)
-
-        # Save and download
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
-            pdf.output(tmp_pdf.name)
+            pdf.output(tmp_pdf.name.encode('latin1'))  # Fix for UnicodeEncodeError
             with open(tmp_pdf.name, "rb") as f:
                 st.download_button(
                     label="⬇️ Download PDF Report",
@@ -151,11 +139,10 @@ if st.button("📄 Create and Download PDF Report"):
                     file_name="afforestation_report.pdf",
                     mime="application/pdf"
                 )
-
-        os.remove(tmp_img.name)
+            os.remove(tmp_pdf.name)
 
     except Exception as e:
-        st.error(f"⚠️ Failed to generate PDF report: {e}")
+        st.error(f"⚠️ Failed to generate PDF: {e}")
 
 # 📘 Case Study
 st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
