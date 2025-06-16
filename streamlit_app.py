@@ -1,5 +1,15 @@
 import streamlit as st
 
+# Inject custom CSS to hide Streamlit's default sidebar pages
+st.markdown("""
+    <style>
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+import streamlit as st
+
 # 📱 Mobile-friendly sidebar tip
 st.markdown("""
 <div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
