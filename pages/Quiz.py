@@ -1,4 +1,12 @@
 import streamlit as st
+
+# 📱 Mobile-friendly sidebar tip
+st.markdown("""
+<div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+    🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> at the top-left to navigate to <em>Learn</em>, <em>Quiz</em>, or <em>Green Community</em>!
+</div>
+""", unsafe_allow_html=True)
+import streamlit as st
 import pandas as pd
 from datetime import datetime
 import pathlib
