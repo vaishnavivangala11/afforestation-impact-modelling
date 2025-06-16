@@ -7,8 +7,27 @@ st.markdown("Empower yourself with knowledge on how trees, duckweed, and vetiver
 
 # ✅ Sidebar navigation
 st.sidebar.markdown("## 📚 Navigation")
-st.sidebar.page_link("streamlit_app.py", label="🏠 Home")
-st.sidebar.page_link("pages/Learn.py", label="📘 Learn")
+st.sidebar.markdown("[🏠 Home](./)")
+st.sidebar.markdown("[📘 Learn](./Learn)")
+st.sidebar.markdown("[🧠 Quiz](./Quiz)")
+st.sidebar.markdown("[🌱 Green Community](./Green_Community)")
+
+# ✅ Mobile-friendly sidebar tip
+st.markdown("""
+<div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+    🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> at the top-left to navigate to <em>Learn</em>, <em>Quiz</em>, or <em>Green Community</em>!
+</div>
+""", unsafe_allow_html=True)
+
+# ✅ Emoji Legend
+with st.expander("🌟 Emoji Legend (Click to view)"):
+    st.markdown("""
+- 🌳 Tree, 🌿 Plant, 🌾 Grass  
+- 💧 Water, 🌡️ Heat, 💨 Air  
+- 🔥 Fire, 🐝 Wildlife, 📜 Law  
+- 📊 Data, 🧮 Formula, 🧠 Quiz  
+- 🪴 Duckweed, 📍 Location, 📘 Info  
+""")
 
 # ✅ Search bar
 search = st.text_input("🔍 Search a topic...", "").lower()
@@ -75,7 +94,7 @@ lessons = {
     }
 }
 
-# ✅ Show topics based on search
+# ✅ Show matching topics
 for section, topics in lessons.items():
     filtered = {k: v for k, v in topics.items() if search in k.lower() or search in v.lower()}
     if filtered:
@@ -84,14 +103,15 @@ for section, topics in lessons.items():
             with st.expander(f"📘 {title}"):
                 st.markdown(content)
 
-# ✅ Footer
+# ✅ Footer & Back to Top
 st.markdown("---")
-st.markdown(
-    """
-    <div style='text-align: center; padding: 20px; font-size: 18px; color: green;'>
-        🌿 Thank you for learning with us! Every tree you plant makes our planet greener.  
-        Let's grow knowledge and forests together. 💚
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div style='text-align: center; padding: 20px; font-size: 18px; color: green;'>
+🌿 Thank you for learning with us! Every tree you plant makes our planet greener.  
+Let's grow knowledge and forests together. 💚
+</div>
+<br>
+<a href='#Learn-Trees,-CO₂-&-Climate-Solutions' style='text-decoration: none;'>
+⬆️ <strong>Back to Top</strong>
+</a>
+""", unsafe_allow_html=True)
