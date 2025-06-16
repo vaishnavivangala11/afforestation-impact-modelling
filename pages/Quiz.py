@@ -1,73 +1,141 @@
 import streamlit as st
-import pandas as pd
-import datetime
-import os
 
-# ✅ Page config
-st.set_page_config(page_title="🧠 Quiz – Tree Impact", page_icon="🧠", layout="wide")
+# Page setup
+st.set_page_config(page_title="CO₂ Quiz – Afforestation", page_icon="🧠")
+st.title("🧠 Mini Quiz: CO₂ & Trees")
+st.caption("Test your knowledge about afforestation and carbon sequestration!")
 
-# ✅ Mobile-friendly tip
-st.markdown("""
-<div style="background-color: #fff9e6; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-    🧠 <strong>Tip:</strong> Tap ☰ (menu) on mobile to access <em>Home, Learn, Quiz, or Community</em> pages!
-</div>
-""", unsafe_allow_html=True)
+# Session states
+if "quiz_started" not in st.session_state:
+    st.session_state.quiz_started = False
+if "quiz_submitted" not in st.session_state:
+    st.session_state.quiz_submitted = False
 
-# ✅ Sidebar links (only show once)
-with st.sidebar:
-    st.title("🧠 Navigation")
-    st.markdown("[🏠 Home](./)")
-    st.markdown("[📘 Learn](./Learn)")
-    st.markdown("[🧠 Quiz](./Quiz)")
-    st.markdown("[🌱 Green Community](./Green_Community)")
+# Start quiz
+if not st.session_state.quiz_started:
+    if st.button("▶️ Start Quiz"):
+        st.session_state.quiz_started = True
+    else:
+        st.stop()
 
-# ✅ Quiz starts
-st.title("🧠 CO₂ & Tree Knowledge Quiz")
-
-name = st.text_input("Enter your name to begin:")
-score = 0
-
+# Quiz questions
 questions = [
-    {"q": "Which process do trees use to absorb CO₂?", "a": "Photosynthesis"},
-    {"q": "What is the formula to estimate CO₂ absorbed by a tree?", "a": "CO₂ = Age × CO₂_per_year × Survival Rate × Growth Factor"},
-    {"q": "Which fast-growing water plant absorbs CO₂?", "a": "Duckweed"},
-    {"q": "What type of grass is used to control erosion and store CO₂?", "a": "Vetiver"},
-    {"q": "Which mission supports tree planting in India?", "a": "Green India Mission"},
-    {"q": "What do we call planting trees in barren areas?", "a": "Afforestation"},
-    {"q": "Name one native CO₂-absorbing tree in East Godavari.", "a": "Neem"},
-    {"q": "CO₂ is a major contributor to?", "a": "Global warming"},
-    {"q": "What do tree roots help conserve?", "a": "Water"},
-    {"q": "Which part of vetiver helps in carbon storage?", "a": "Roots"},
-    {"q": "How many trees are needed to absorb 21,000 kg of CO₂ (using 21kg per tree)?", "a": "1000"},
-    {"q": "What does the survival rate in the CO₂ formula indicate?", "a": "How many trees stay alive"},
-    {"q": "What is a major source of deforestation?", "a": "Urban growth"},
-    {"q": "Which aquatic plant helps clean ponds and absorbs CO₂?", "a": "Duckweed"},
-    {"q": "Why is it important to plant native species?", "a": "They grow well and support biodiversity"}
+    {
+        "q": "What gas do trees absorb from the atmosphere?",
+        "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"],
+        "answer": "Carbon Dioxide"
+    },
+    {
+        "q": "Which part of the tree is mainly responsible for photosynthesis?",
+        "options": ["Roots", "Stem", "Leaves", "Bark"],
+        "answer": "Leaves"
+    },
+    {
+        "q": "Which gas do trees release during the day?",
+        "options": ["Carbon Dioxide", "Oxygen", "Nitrogen", "Methane"],
+        "answer": "Oxygen"
+    },
+    {
+        "q": "What is the basic formula for CO₂ absorption by a tree?",
+        "options": [
+            "CO₂/year × Age",
+            "CO₂/year × Age × Survival Rate × Growth Factor",
+            "CO₂/year + Height",
+            "Photosynthesis × CO₂"
+        ],
+        "answer": "CO₂/year × Age × Survival Rate × Growth Factor"
+    },
+    {
+        "q": "Which tree absorbs the most CO₂?",
+        "options": ["Bamboo", "Neem", "Banyan", "Mango"],
+        "answer": "Banyan"
+    },
+    {
+        "q": "If a tree absorbs 20 kg CO₂ per year, how much in 10 years?",
+        "options": ["200 kg", "20 kg", "100 kg", "2,000 kg"],
+        "answer": "200 kg"
+    },
+    {
+        "q": "What role does tree survival rate play in CO₂ calculation?",
+        "options": [
+            "It reduces the total CO₂ based on live trees",
+            "It doubles the CO₂ rate",
+            "It increases tree height",
+            "It affects only oxygen"
+        ],
+        "answer": "It reduces the total CO₂ based on live trees"
+    },
+    {
+        "q": "Growth factor in CO₂ calculation is used to:",
+        "options": [
+            "Account for local growing conditions",
+            "Calculate rainfall",
+            "Estimate seed germination",
+            "Measure tree height"
+        ],
+        "answer": "Account for local growing conditions"
+    },
+    {
+        "q": "Which formula helps estimate total CO₂ of 1000 trees?",
+        "options": [
+            "Tree CO₂ × 1000",
+            "Tree CO₂ × 1000 × Age",
+            "CO₂/year × Age × 1000 × Survival × Growth",
+            "CO₂ × Leaves"
+        ],
+        "answer": "CO₂/year × Age × 1000 × Survival × Growth"
+    },
+    {
+        "q": "Why do we simulate CO₂ for up to 200 years in this app?",
+        "options": [
+            "To show extreme future climate",
+            "For trees like Banyan or Peepal that live very long",
+            "To confuse users",
+            "200 years is default"
+        ],
+        "answer": "For trees like Banyan or Peepal that live very long"
+    }
 ]
 
-user_answers = []
-if name:
-    st.markdown("### Answer all 15 questions below:")
-    for i, q in enumerate(questions):
-        answer = st.text_input(f"{i+1}. {q['q']}")
-        user_answers.append(answer)
+st.markdown("### Choose the correct answer for each question:")
 
-    if st.button("✅ Submit Quiz"):
-        for i in range(len(questions)):
-            if user_answers[i].strip().lower() == questions[i]["a"].strip().lower():
-                score += 1
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        data = {"Name": [name], "Score": [score], "Time": [timestamp]}
-        df = pd.DataFrame(data)
+user_answers = {}
+score = 0
 
-        # ✅ Save to CSV
-        filename = os.path.join(os.path.dirname(__file__), "..", "quiz_submissions.csv")
-        if os.path.exists(filename):
-            df_existing = pd.read_csv(filename)
-            df_combined = pd.concat([df_existing, df], ignore_index=True)
+# Display quiz
+for i, q in enumerate(questions, 1):
+    all_options = ["Select an answer"] + q["options"]
+    user_answers[i] = st.radio(
+        f"Q{i}: {q['q']}", 
+        all_options,
+        key=f"q{i}"
+    )
+
+# Submit button
+if st.button("✅ Submit Quiz"):
+    st.session_state.quiz_submitted = True
+
+# Show results only after submission
+if st.session_state.quiz_submitted:
+    st.markdown("---")
+    for i, q in enumerate(questions, 1):
+        user_ans = user_answers[i]
+        correct = q["answer"]
+        if user_ans == correct:
+            score += 1
+            st.success(f"✅ Q{i}: Correct! ({correct})")
+        elif user_ans == "Select an answer":
+            st.warning(f"⚠️ Q{i}: Not answered. Correct answer: {correct}")
         else:
-            df_combined = df
-        df_combined.to_csv(filename, index=False)
+            st.error(f"❌ Q{i}: Incorrect. You chose '{user_ans}'. Correct is: {correct}")
 
-        st.success("✅ Quiz submitted successfully!")
-        st.info("📄 Your result has been saved. Thanks for participating! 🎉")
+    st.markdown("---")
+    st.success(f"🎯 Your Score: **{score} out of {len(questions)}**")
+
+    if score == len(questions):
+        st.balloons()
+        st.markdown("🎉 Excellent! You're a CO₂ champion! 💚")
+    elif score >= 7:
+        st.markdown("👍 Good job! You know your trees and CO₂.")
+    else:
+        st.markdown("📘 Keep learning! Try the **Learn** section for more info.")
