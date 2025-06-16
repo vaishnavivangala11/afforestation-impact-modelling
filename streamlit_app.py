@@ -32,7 +32,7 @@ with st.sidebar:
     st.markdown("[🌱 Green Community](./Green_Community)")
 
 # ✅ Load Excel data
-file_path = os.path.join(os.path.dirname(__file__), "app", "local_species.xlsx")
+file_path = os.path.join(os.path.dirname(__file__), "local_species.xlsx")
 df = pd.read_excel(file_path)
 
 # ✅ Title
