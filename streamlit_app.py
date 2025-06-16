@@ -101,15 +101,13 @@ ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Ye
 st.pyplot(fig2)
 
 st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{total_20_years:,.0f} kg** of CO₂ in 20 years.")
-# 📄 PDF Report
-st.subheader("📄 Generate PDF Report")
-
 if st.button("📄 Create and Download PDF Report"):
     try:
         from fpdf import FPDF
         import tempfile
         import os
         import matplotlib.pyplot as plt
+        from datetime import datetime
 
         # Initialize PDF
         pdf = FPDF()
@@ -117,15 +115,30 @@ if st.button("📄 Create and Download PDF Report"):
         pdf.set_font("Arial", size=16)
         pdf.cell(200, 10, txt="Afforestation CO₂ Report", ln=True, align='C')
 
-        # Add tree details
+        # Tree details section
         pdf.set_font("Arial", size=12)
         pdf.ln(10)
         pdf.cell(200, 10, txt=f"🌳 Tree Species: {selected_species}", ln=True)
         pdf.cell(200, 10, txt=f"🌱 Soil Type: {species_row['Soil_Type']}", ln=True)
         pdf.cell(200, 10, txt=f"📍 Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
+        pdf.cell(200, 10, txt=f"📈 Growth Factor: {species_row['Growth_factor']}", ln=True)
+        pdf.cell(200, 10, txt=f"💧 Survival Rate: {species_row['Survival_rate']}", ln=True)
         pdf.cell(200, 10, txt=f"💨 CO₂ Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
 
-        # Plot CO2 chart
+        # CO₂ formula section
+        pdf.ln(10)
+        pdf.set_font("Arial", style='B', size=12)
+        pdf.cell(200, 10, txt="🧮 CO₂ Calculation Formula", ln=True)
+        pdf.set_font("Arial", size=11)
+        pdf.multi_cell(0, 10, txt=(
+            "Total CO₂ = (CO₂/year) × (Years) × (Survival Rate) × (Growth Factor)\n\n"
+            f"- CO₂/year: {co2_rate} kg\n"
+            f"- Years: 20\n"
+            f"- Survival Rate: {species_row['Survival_rate']}\n"
+            f"- Growth Factor: {species_row['Growth_factor']}"
+        ))
+
+        # Plot CO₂ graph image
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
             fig, ax = plt.subplots()
             ax.plot(years, co2_1000_trees, marker='s', color='orange')
@@ -135,9 +148,9 @@ if st.button("📄 Create and Download PDF Report"):
             fig.tight_layout()
             fig.savefig(tmp_img.name)
             plt.close(fig)
-            pdf.image(tmp_img.name, x=10, y=80, w=180)
+            pdf.image(tmp_img.name, x=10, y=140, w=180)
 
-        # Save PDF to temporary file and provide download button
+        # Save and download PDF
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
             pdf.output(tmp_pdf.name)
             with open(tmp_pdf.name, "rb") as f:
@@ -148,7 +161,6 @@ if st.button("📄 Create and Download PDF Report"):
                     mime="application/pdf"
                 )
 
-        # Clean up temporary image file
         os.remove(tmp_img.name)
 
     except Exception as e:
