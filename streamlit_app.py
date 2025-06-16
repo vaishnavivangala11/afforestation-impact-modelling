@@ -5,7 +5,7 @@ import tempfile
 import os
 from fpdf import FPDF
 
-# ✅ Set page config first
+# ✅ Set page config
 st.set_page_config(
     page_title="Afforestation Impact – East Godavari",
     page_icon="🌳",
@@ -15,12 +15,12 @@ st.set_page_config(
 
 # ✅ Hide Streamlit's default multi-page navigation
 hide_default_format = """
-       <style>
-       section[data-testid="stSidebarNav"] {
-           display: none;
-       }
-       </style>
-       """
+    <style>
+    section[data-testid="stSidebarNav"] {
+        display: none;
+    }
+    </style>
+"""
 st.markdown(hide_default_format, unsafe_allow_html=True)
 
 # ✅ Custom sidebar navigation
@@ -38,14 +38,14 @@ df = pd.read_excel(file_path)
 # ✅ Title
 st.title("🌳 Afforestation Impact Modelling")
 
-# 🌿 Select tree
+# 🌿 Tree selection
 tree = st.selectbox("Select a Tree Species", df["Tree Name"])
 
 # 📏 Tree age
 age = st.slider("Enter Tree Age (in Years)", min_value=1, max_value=200)
 st.caption("ℹ️ Most trees absorb CO₂ effectively for 20–30 years. We allow up to 200 years for long-living species like Banyan or Peepal.")
 
-# 📊 Calculate CO2
+# 📊 CO₂ calculation
 selected_tree = df[df["Tree Name"] == tree].iloc[0]
 survival_rate = selected_tree["Survival_rate"]
 growth_factor = selected_tree["Growth_factor"]
@@ -56,6 +56,7 @@ st.markdown(f"📉 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; �
 st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
 st.info(f"🙊 **Max Age for {tree}: {selected_tree['Max_Age']} years**")
 
+# 📖 Formula explanation
 with st.expander("📊 How is this CO₂ value calculated? Click to see the formula"):
     st.markdown(f"""
     ### 🧾 CO₂ Absorption Formula
@@ -70,7 +71,7 @@ with st.expander("📊 How is this CO₂ value calculated? Click to see the form
 
 st.info(f"🧪 **Soil Type:** {selected_tree['Soil_Type']}\n\n📍 **Best Place to Plant:** {selected_tree['Best_Place_to_Plant']}")
 
-# 📈 CO2 graph over 20 years
+# 📈 CO₂ graph
 st.subheader("📈 CO₂ Sequestration Over 20 Years")
 selected_species = st.selectbox("Choose a tree species for the graph:", df["Tree Name"])
 species_row = df[df["Tree Name"] == selected_species].iloc[0]
@@ -152,7 +153,8 @@ with st.expander("📊 Can Trees & Plants Really Capture That Much CO₂?"):
 st.subheader("🗺️ East Godavari Map")
 map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
 st.map(map_df, zoom=9)
-# 🌍 SDG Impact – with Expander and Final Quote
+
+# 🌍 SDG Impact (expandable section)
 with st.expander("🌍 SDG Impact – How Your Trees Help the Planet"):
     st.markdown("""
 ### 🎯 Sustainable Development Goals (SDGs) Impact
@@ -182,6 +184,6 @@ By combining science, local knowledge, and technology, our project promotes sust
 ✅ From cleaner air to better jobs, every tree brings us one step closer to the SDGs.
 """)
 
-# 🌟 Final Inspirational Quote at Bottom
+# 🌟 Final Quote
 st.markdown("---")
 st.markdown("### 💡 *“The best time to plant a tree was 20 years ago. The second-best time is now.”*")
