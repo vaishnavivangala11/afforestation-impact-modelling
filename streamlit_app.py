@@ -5,66 +5,75 @@ import tempfile
 import os
 from fpdf import FPDF
 
-# ✅ Page config must be first Streamlit command
-st.set_page_config(page_title="Afforestation Impact – East Godavari", page_icon="🌳", layout="wide")
+# ✅ Set page config first
+st.set_page_config(
+    page_title="Afforestation Impact – East Godavari",
+    page_icon="🌳",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# ✅ Load Excel file from app/ folder
+# ✅ Hide Streamlit's default multi-page navigation
+hide_default_format = """
+       <style>
+       section[data-testid="stSidebarNav"] {
+           display: none;
+       }
+       </style>
+       """
+st.markdown(hide_default_format, unsafe_allow_html=True)
+
+# ✅ Custom sidebar navigation
+with st.sidebar:
+    st.title("🌿 Navigation")
+    st.markdown("[🏠 Home](./)")
+    st.markdown("[📘 Learn](./Learn)")
+    st.markdown("[🧠 Quiz](./Quiz)")
+    st.markdown("[🌱 Green Community](./Green_Community)")
+
+# ✅ Load Excel data
 file_path = os.path.join(os.path.dirname(__file__), "local_species.xlsx")
-
 df = pd.read_excel(file_path)
 
 # ✅ Title
 st.title("🌳 Afforestation Impact Modelling")
 
-# 🌿 Tree dropdown
+# 🌿 Select tree
 tree = st.selectbox("Select a Tree Species", df["Tree Name"])
 
-# 📏 Tree age input
+# 📏 Tree age
 age = st.slider("Enter Tree Age (in Years)", min_value=1, max_value=200)
 st.caption("ℹ️ Most trees absorb CO₂ effectively for 20–30 years. We allow up to 200 years for long-living species like Banyan or Peepal.")
 
-# 📊 Get selected tree row
+# 📊 Calculate CO2
 selected_tree = df[df["Tree Name"] == tree].iloc[0]
 survival_rate = selected_tree["Survival_rate"]
 growth_factor = selected_tree["Growth_factor"]
-adjusted_co2 = age * selected_tree["CO2_per_year_kg"] * survival_rate * growth_factor
-st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
+co2_per_year = selected_tree["CO2_per_year_kg"]
+adjusted_co2 = age * co2_per_year * survival_rate * growth_factor
 
-# ✅ Display CO2 & info
+st.markdown(f"📉 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
 st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
-st.info(f"🕰️ **Max Age for {tree}:** {selected_tree['Max_Age']} years")
-with st.expander("🧮 How is this CO₂ value calculated? Click to see the formula"):
-    st.markdown("""
-    ### 🧾 **CO₂ Absorption Formula**
+st.info(f"🙊 **Max Age for {tree}: {selected_tree['Max_Age']} years**")
 
+with st.expander("📊 How is this CO₂ value calculated? Click to see the formula"):
+    st.markdown(f"""
+    ### 🧾 CO₂ Absorption Formula
     ```
-    Total CO₂ = (CO₂ per year) × (Tree Age) × (Survival Rate) × (Growth Factor)
+    Total CO₂ = (CO₂/year) × (Age) × (Survival Rate) × (Growth Factor)
     ```
-
-    #### ✅ Explanation:
-    - **CO₂ per year**: How much CO₂ this tree species absorbs annually (e.g., 22.1 kg/year for Neem).
-    - **Tree Age**: Number of years you've selected.
-    - **Survival Rate**: Likelihood the tree survives (e.g., 0.85 = 85%).
-    - **Growth Factor**: Adjustment based on tree’s growth rate and environmental fit (e.g., 1.0).
-
-    ---
-    #### 📌 **Example**:
-    For a Neem tree (CO₂/year = 22.1), age = 1, survival rate = 0.85, growth factor = 1.0:
-
-    ```
-    Total CO₂ = 22.1 × 1 × 0.85 × 1.0 = 18.78 kg
-    ```
-
-    This is a **realistic estimate** of how much carbon this tree can remove in that time. 🌍🌳
+    - CO₂/year: {co2_per_year} kg
+    - Age: {age}
+    - Survival Rate: {survival_rate}
+    - Growth Factor: {growth_factor}
     """)
 
 st.info(f"🧪 **Soil Type:** {selected_tree['Soil_Type']}\n\n📍 **Best Place to Plant:** {selected_tree['Best_Place_to_Plant']}")
 
-# 📈 CO2 Graph Over 20 Years
+# 📈 CO2 graph over 20 years
 st.subheader("📈 CO₂ Sequestration Over 20 Years")
 selected_species = st.selectbox("Choose a tree species for the graph:", df["Tree Name"])
 species_row = df[df["Tree Name"] == selected_species].iloc[0]
-
 co2_rate = species_row["CO2_per_year_kg"]
 survival = species_row["Survival_rate"]
 growth = species_row["Growth_factor"]
@@ -124,26 +133,19 @@ if st.button("📄 Create and Download PDF Report"):
         pdf.output(pdf_file.name)
         with open(pdf_file.name, "rb") as f:
             st.download_button("⬇️ Download PDF Report", f, file_name="afforestation_report.pdf", mime="application/pdf")
-            st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
 
+# 📘 Case Study
+st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
 with st.expander("📊 Can Trees & Plants Really Capture That Much CO₂?"):
     st.markdown("""
-**❓ What if we plant 1,000 Neem trees in East Godavari?**  
-✅ Over 10 years, they can absorb **212.5 tons of CO₂**!  
-🌳 Plus, they offer shade, clean air, and biodiversity support.
+**✅ Neem Trees:** 1,000 trees absorb **212.5 tons of CO₂** in 10 years  
+🌱 Provide shade, biodiversity, and clean air  
 
-**❓ Can a small water pond help climate action?**  
-✅ Yes! A 1-acre pond filled with fast-growing **duckweed** can remove up to **10 tons of CO₂** in just 2 years.  
-🪴 Duckweed also cleans water and grows rapidly.
+**✅ Duckweed in ponds:** 1-acre pond removes **10 tons CO₂** in 2 years  
+🪴 Grows fast, cleans water
 
-**❓ What can we plant on dry slopes or bunds?**  
-✅ **Vetiver grass** is ideal. 500 rows can store **8.1 tons of CO₂** in 15 years.  
-🌾 It prevents erosion and thrives in poor soil with little water.
-
----
-
-🌿 These real-life cases show how small actions in local spaces can make a big climate difference.  
-Let’s plant smart — and grow impact!
+**✅ Vetiver Grass:** 500 rows = **8.1 tons CO₂** in 15 years  
+🌾 Controls erosion, survives in poor soil
 """)
 
 # 🗺️ Map
@@ -151,40 +153,17 @@ st.subheader("🗺️ East Godavari Map")
 map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
 st.map(map_df, zoom=9)
 
-# 🌍 SDG Text
-st.subheader("🌍 SDG Impact")
-st.markdown("""
-### 🎯 Sustainable Development Goals (SDGs) Impact
+# 🌍 SDG Impact as expandable
+with st.expander("🌍 Sustainable Development Goals (SDG) Impact"):
+    st.markdown("""
+### 🎯 Supported SDGs
 
-By promoting tree planting using real local species, this project actively supports the following SDGs:
-
-- ✅ **SDG 13: Climate Action**  
-  Trees capture atmospheric CO₂, directly contributing to climate change mitigation.
-
-- ✅ **SDG 15: Life on Land**  
-  Afforestation enhances biodiversity, restores degraded lands, and supports ecosystem balance.
-
-- ✅ **SDG 6: Clean Water and Sanitation**  
-  Improved green cover supports better water infiltration and protects watersheds.
-
-- ✅ **SDG 3: Good Health and Well-being**  
-  More trees mean cleaner air, shade, and improved physical and mental health for communities.
-
-- ✅ **SDG 1 & 8: No Poverty & Decent Work**  
-  Tree plantation drives create jobs and improve rural livelihoods through nursery and forestry work.
-
-By combining science, local knowledge, and technology, our project promotes sustainability. 💚
+- ✅ **SDG 13: Climate Action** – CO₂ removal from air  
+- ✅ **SDG 15: Life on Land** – Forest cover, biodiversity  
+- ✅ **SDG 6: Clean Water** – Water retention, pond life  
+- ✅ **SDG 3: Good Health** – Clean air, shade, well-being  
+- ✅ **SDG 1 & 8: No Poverty & Jobs** – Tree planting, nurseries, green jobs  
 """)
 
-st.markdown("""
-🌳 *Your simple act of planting a tree supports global goals and local futures.*  
-✅ From cleaner air to better jobs, every tree brings us one step closer to the SDGs.
-""")
+st.markdown("🌳 *Your simple act of planting a tree supports global goals and local futures.*")
 
-# ✅ Sidebar Navigation (correctly uses page_link)
-with st.sidebar:
-    st.title("🌿 Navigation")
-    st.markdown("[🏠 Home](./)")
-    st.markdown("[📘 Learn](./Learn)")
-    st.markdown("[🧠 Quiz](./Quiz)")
-    st.markdown("[🌱 Green Community](./Green_Community)")
