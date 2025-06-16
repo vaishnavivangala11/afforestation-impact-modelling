@@ -1,52 +1,71 @@
-# ────────────────────────────────
-# 🌿 Feedback Section
-# ────────────────────────────────
+import streamlit as st
+import pandas as pd
+import os
+from datetime import datetime
 
-st.markdown("---")
-st.markdown("## 🌿 Help Us Grow – Share Your Thoughts About This Green App")
+# 🌱 Page Setup
+st.set_page_config(page_title="Green Community – Feedback", page_icon="🌿")
+st.title("🌱 Green Community – Share Your Thoughts")
 
-# 📁 Correct file path (outside the app folder, just in project root)
-feedback_file = "feedback.csv"
+st.markdown("""
+We believe in growing **together** – like a forest. 🌳  
+Your voice helps us improve and inspires others.  
+Share your thoughts, feedback, or experience below. 💚
+""")
 
-# 🔁 Load existing feedback
-if os.path.exists(feedback_file):
-    feedback_df = pd.read_csv(feedback_file)
-    st.markdown(f"**🧾 Total feedback received: {len(feedback_df)}**")
-else:
-    feedback_df = pd.DataFrame(columns=["Timestamp", "Name", "Rating", "Feedback"])
-    st.markdown("**🧾 Total feedback received: 0**")
+# 📂 File to store feedback
+feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "feedback.csv")
+# ✅ Create the 'app/' folder if it doesn't exist
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
 
-# 📝 Feedback form
+
+# ✅ Ensure folder exists before writing
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
+
+# 📝 Feedback Form
 with st.form("feedback_form", clear_on_submit=True):
-    fb_name = st.text_input("Your Name (Optional)", placeholder="Type your name")
-    fb_rating = st.slider("🌟 Rate this App", 1, 5, 5)
-    fb_text = st.text_area("Your Feedback", placeholder="Tell us what you think...")
-    fb_submit = st.form_submit_button("✅ Submit Feedback")
+    name = st.text_input("Your Name (Optional)", placeholder="Enter your name or leave blank for Anonymous")
+    feedback = st.text_area("💬 Share your feedback", placeholder="Write your thoughts here...")
+    rating = st.slider("🌟 Rate this Web App (1 = Poor, 5 = Excellent)", 1, 5, 5)
+    submit = st.form_submit_button("📩 Submit Feedback")
 
-# 💾 Save feedback
-if fb_submit:
-    if fb_text.strip() == "":
-        st.warning("⚠️ Please provide feedback before submitting.")
+# 💾 Save Feedback
+if submit:
+    if feedback.strip() == "":
+        st.warning("⚠️ Please enter some feedback before submitting.")
     else:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         new_entry = pd.DataFrame([{
-            "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "Name": fb_name.strip() if fb_name.strip() else "Anonymous",
-            "Rating": fb_rating,
-            "Feedback": fb_text.strip()
+            "Timestamp": timestamp,
+            "Name": name if name else "Anonymous",
+            "Feedback": feedback,
+            "Rating": rating
         }])
-        feedback_df = pd.concat([feedback_df, new_entry], ignore_index=True)
-        feedback_df.to_csv(feedback_file, index=False)
-        st.success("✅ Thank you! Your feedback was submitted.")
-        st.rerun()
 
-# 📬 Display past feedback
-if not feedback_df.empty:
-    st.markdown("### 📬 What People Are Saying")
-    for _, row in feedback_df.sort_values("Timestamp", ascending=False).iterrows():
+        if os.path.exists(feedback_file):
+            existing = pd.read_csv(feedback_file)
+            updated = pd.concat([existing, new_entry], ignore_index=True)
+        else:
+            updated = new_entry
+
+        updated.to_csv(feedback_file, index=False)
+        st.success("✅ Thank you! Your feedback has been added to the Green Community wall below.")
+
+# 🌿 Show Community Feedback
+st.markdown("## 💬 Community Wall – What Others Are Saying")
+
+if os.path.exists(feedback_file):
+    df = pd.read_csv(feedback_file)
+    df = df.sort_values("Timestamp", ascending=False)
+    
+    for _, row in df.iterrows():
         st.markdown(f"""
-        <div style='background-color:#f9fbe7; padding:10px; border-left: 4px solid #aed581; border-radius:5px; margin-bottom:8px'>
-        <strong>👤 {row['Name']}</strong> – ⭐ {row['Rating']}<br>
-        <i>{row['Feedback']}</i><br>
-        <small>🕒 {row['Timestamp']}</small>
+        <div style='background-color:#f4fff4;padding:10px;border-radius:8px;margin-bottom:10px'>
+            <strong>👤 {row['Name']}</strong>  
+            ⭐ **Rating**: {row['Rating']} / 5  
+            <p>{row['Feedback']}</p>
+            <small>🕒 {row['Timestamp']}</small>
         </div>
         """, unsafe_allow_html=True)
+else:
+    st.info("No feedback yet. Be the first to share your thoughts!")
