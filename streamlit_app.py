@@ -152,21 +152,36 @@ with st.expander("📊 Can Trees & Plants Really Capture That Much CO₂?"):
 st.subheader("🗺️ East Godavari Map")
 map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
 st.map(map_df, zoom=9)
+# 🌍 SDG Impact – with Expander and Final Quote
+with st.expander("🌍 SDG Impact – How Your Trees Help the Planet"):
+    st.markdown("""
+### 🎯 Sustainable Development Goals (SDGs) Impact
 
-# 🌍 SDG Impact – original format
-st.subheader("🌍 SDG Impact: How Your Action Supports the Planet")
-st.markdown("""
-Planting trees and native species doesn't just remove CO₂—it supports multiple Sustainable Development Goals:
+By promoting tree planting using real local species, this project actively supports the following SDGs:
 
-- ✅ **SDG 13: Climate Action** – Trees capture CO₂, reduce warming  
-- ✅ **SDG 15: Life on Land** – Restores biodiversity and greenery  
-- ✅ **SDG 6: Clean Water** – Helps recharge groundwater, prevents runoff  
-- ✅ **SDG 3: Good Health** – Improves air quality, mental wellness  
-- ✅ **SDG 1 & 8: No Poverty & Jobs** – Creates rural jobs via nurseries and planting missions  
+- ✅ **SDG 13: Climate Action**  
+  Trees capture atmospheric CO₂, directly contributing to climate change mitigation.
 
-> *Every sapling planted brings us closer to a greener, safer, and more sustainable future.*
+- ✅ **SDG 15: Life on Land**  
+  Afforestation enhances biodiversity, restores degraded lands, and supports ecosystem balance.
+
+- ✅ **SDG 6: Clean Water and Sanitation**  
+  Improved green cover supports better water infiltration and protects watersheds.
+
+- ✅ **SDG 3: Good Health and Well-being**  
+  More trees mean cleaner air, shade, and improved physical and mental health for communities.
+
+- ✅ **SDG 1 & 8: No Poverty & Decent Work**  
+  Tree plantation drives create jobs and improve rural livelihoods through nursery and forestry work.
+
+By combining science, local knowledge, and technology, our project promotes sustainability. 💚
 """)
 
-# 🌿 Footer
-st.markdown("----")
-st.markdown("🌳 *Your simple act of planting a tree supports global goals and local futures.*")
+    st.markdown("""
+🌳 *Your simple act of planting a tree supports global goals and local futures.*  
+✅ From cleaner air to better jobs, every tree brings us one step closer to the SDGs.
+""")
+
+# 🌟 Final Inspirational Quote at Bottom
+st.markdown("---")
+st.markdown("### 💡 *“The best time to plant a tree was 20 years ago. The second-best time is now.”*")
