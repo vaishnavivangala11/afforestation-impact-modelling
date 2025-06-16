@@ -101,76 +101,63 @@ ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Ye
 st.pyplot(fig2)
 
 st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{total_20_years:,.0f} kg** of CO₂ in 20 years.")
-import streamlit as st
-import matplotlib.pyplot as plt
-from fpdf import FPDF
-import tempfile
-import os
+# 📄 PDF Report
+st.subheader("📄 Generate PDF Report")
 
-# Dummy example data – replace with your real data
-selected_species = "Neem"
-species_row = {
-    "Soil_Type": "Loamy",
-    "Best_Place_to_Plant": "East Godavari"
-}
-co2_1000_trees = [i * 500 for i in range(1, 21)]
-years = list(range(1, 21))
-total_20_years = sum(co2_1000_trees)
-
-st.subheader("Download CO2 Simulation Report (PDF)")
-
-if st.button("Create PDF Report"):
+if st.button("📄 Create and Download PDF Report"):
     try:
-        # ✅ Generate CO2 graph and save image
+        from fpdf import FPDF
+        import tempfile
+        import os
+        import matplotlib.pyplot as plt
+
+        # Initialize PDF
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=16)
+        pdf.cell(200, 10, txt="Afforestation CO2 Report", ln=True, align='C')
+
+        # Add tree details (plain text only)
+        pdf.set_font("Arial", size=12)
+        pdf.ln(10)
+        pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
+        pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
+        pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
+        pdf.cell(200, 10, txt=f"CO2 absorbed by 1000 trees in 20 years: {int(total_20_years):,} kg", ln=True)
+
+        # Plot CO2 chart
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
             fig, ax = plt.subplots()
-            ax.plot(years, co2_1000_trees, marker='o', color='green')
+            ax.plot(years, co2_1000_trees, marker='s', color='orange')
             ax.set_xlabel("Year")
-            ax.set_ylabel("CO2 Captured (kg)")
-            ax.set_title("CO2 Sequestration Over 20 Years")
+            ax.set_ylabel("Total CO2 Captured (kg)")
+            ax.set_title(f"1000 {selected_species} Trees Over 20 Years")
             fig.tight_layout()
             fig.savefig(tmp_img.name)
             plt.close(fig)
+            pdf.image(tmp_img.name, x=10, y=80, w=180)
 
-            # ✅ Create PDF
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=14)
-            pdf.cell(200, 10, txt="Afforestation CO2 Simulation Report", ln=True, align='C')
+        # Add a final inspiring quote (no emojis)
+        pdf.set_y(-40)
+        pdf.set_font("Arial", style='I', size=11)
+        pdf.multi_cell(0, 10, txt='"The best time to plant a tree was 20 years ago. The second best time is now."')
 
-            pdf.set_font("Arial", size=11)
-            pdf.ln(10)
-            pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
-            pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
-            pdf.cell(200, 10, txt=f"Best Planting Area: {species_row['Best_Place_to_Plant']}", ln=True)
-            pdf.cell(200, 10, txt=f"CO2 Absorbed over 20 years (1000 trees): {int(total_20_years)} kg", ln=True)
-
-            pdf.ln(10)
-            pdf.image(tmp_img.name, x=10, y=None, w=180)
-
-            pdf.ln(10)
-            pdf.set_font("Arial", size=10)
-            quote = "The best time to plant a tree was 20 years ago. The second best time is now."
-            pdf.multi_cell(0, 10, quote)
-
-        # ✅ Save to temp PDF file and offer download
+        # Save PDF and add download button
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
-            pdf.output(tmp_pdf.name)  # DO NOT encode filename
+            pdf.output(tmp_pdf.name)
             with open(tmp_pdf.name, "rb") as f:
                 st.download_button(
-                    label="Download PDF Report",
+                    label="⬇️ Download PDF Report",
                     data=f,
-                    file_name="co2_simulation_report.pdf",
+                    file_name="afforestation_report.pdf",
                     mime="application/pdf"
                 )
 
-        # ✅ Clean up
+        # Clean up temp image
         os.remove(tmp_img.name)
-        os.remove(tmp_pdf.name)
 
     except Exception as e:
-        st.error("Error generating PDF. Please check the species names, data, or remove special characters.")
-        st.exception(e)
+        st.error(f"⚠️ Failed to generate PDF report: {e}")
 
 # 📘 Case Study
 st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
