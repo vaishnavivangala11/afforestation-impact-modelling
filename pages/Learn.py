@@ -6,13 +6,22 @@ st.set_page_config(page_title="Learn", page_icon="📘", layout="wide")
 # ✅ Title and tip box
 st.title("📘 Learn: Trees, CO₂ & Climate Solutions")
 st.markdown("Empower yourself with knowledge on how trees, duckweed, and vetiver help our planet. 🌍")
+import random
 
-# ✅ 💡 Did you know box
-st.markdown("""
+# ✅ Random "Did you know?" facts
+did_you_know_facts = [
+    "💡 **Did you know?** One mature tree can absorb up to **22 kg of CO₂** per year!",
+    "💡 **Did you know?** 🇮🇳 India’s **Green India Mission** aims to plant and improve forests on **10 million hectares**, helping fight climate change and support communities."
+]
+
+# ✅ Show one fact at random
+st.markdown(f"""
 <div style="background-color: #e0ffe0; padding: 10px; border-radius: 8px; margin-bottom: 20px;">
-    💡 <strong>Did you know?</strong> One mature tree can absorb up to <strong>22 kg of CO₂</strong> per year!
+    {random.choice(did_you_know_facts)}
 </div>
 """, unsafe_allow_html=True)
+
+
 
 # ✅ Sidebar navigation
 st.sidebar.markdown("## 📚 Navigation")
