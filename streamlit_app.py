@@ -107,50 +107,49 @@ if st.button("📄 Create and Download PDF Report"):
         import tempfile
         import os
         import matplotlib.pyplot as plt
-        from datetime import datetime
 
         # Initialize PDF
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=16)
-        pdf.cell(200, 10, txt="Afforestation CO₂ Report", ln=True, align='C')
+        pdf.cell(200, 10, txt="Afforestation CO2 Report", ln=True, align='C')
 
-        # Tree details section
+        # Tree details (no emojis)
         pdf.set_font("Arial", size=12)
         pdf.ln(10)
-        pdf.cell(200, 10, txt=f"🌳 Tree Species: {selected_species}", ln=True)
-        pdf.cell(200, 10, txt=f"🌱 Soil Type: {species_row['Soil_Type']}", ln=True)
-        pdf.cell(200, 10, txt=f"📍 Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
-        pdf.cell(200, 10, txt=f"📈 Growth Factor: {species_row['Growth_factor']}", ln=True)
-        pdf.cell(200, 10, txt=f"💧 Survival Rate: {species_row['Survival_rate']}", ln=True)
-        pdf.cell(200, 10, txt=f"💨 CO₂ Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
+        pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
+        pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
+        pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
+        pdf.cell(200, 10, txt=f"Growth Factor: {species_row['Growth_factor']}", ln=True)
+        pdf.cell(200, 10, txt=f"Survival Rate: {species_row['Survival_rate']}", ln=True)
+        pdf.cell(200, 10, txt=f"CO2 Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
 
-        # CO₂ formula section
+        # CO2 formula section
         pdf.ln(10)
         pdf.set_font("Arial", style='B', size=12)
-        pdf.cell(200, 10, txt="🧮 CO₂ Calculation Formula", ln=True)
+        pdf.cell(200, 10, txt="CO2 Calculation Formula", ln=True)
         pdf.set_font("Arial", size=11)
         pdf.multi_cell(0, 10, txt=(
-            "Total CO₂ = (CO₂/year) × (Years) × (Survival Rate) × (Growth Factor)\n\n"
-            f"- CO₂/year: {co2_rate} kg\n"
+            "Total CO2 = (CO2/year) × (Years) × (Survival Rate) × (Growth Factor)\n\n"
+            f"- CO2/year: {co2_rate} kg\n"
             f"- Years: 20\n"
             f"- Survival Rate: {species_row['Survival_rate']}\n"
             f"- Growth Factor: {species_row['Growth_factor']}"
         ))
 
-        # Plot CO₂ graph image
+        # Plot CO2 graph and insert image
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
             fig, ax = plt.subplots()
             ax.plot(years, co2_1000_trees, marker='s', color='orange')
             ax.set_xlabel("Year")
-            ax.set_ylabel("Total CO₂ Captured (kg)")
+            ax.set_ylabel("Total CO2 Captured (kg)")
             ax.set_title(f"1000 {selected_species} Trees Over 20 Years")
             fig.tight_layout()
             fig.savefig(tmp_img.name)
             plt.close(fig)
             pdf.image(tmp_img.name, x=10, y=140, w=180)
 
-        # Save and download PDF
+        # Save and download
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
             pdf.output(tmp_pdf.name)
             with open(tmp_pdf.name, "rb") as f:
