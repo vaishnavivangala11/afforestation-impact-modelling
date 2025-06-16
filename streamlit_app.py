@@ -108,46 +108,37 @@ if st.button("📄 Create and Download PDF Report"):
         import os
         import matplotlib.pyplot as plt
 
-        # Initialize PDF
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=16)
-        pdf.cell(200, 10, txt="Afforestation CO2 Report", ln=True, align='C')
+        pdf.cell(200, 10, txt="Afforestation CO₂ Report", ln=True, align='C')
 
-        # Tree details (no emojis)
+        # Tree Info
         pdf.set_font("Arial", size=12)
         pdf.ln(10)
-        pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
-        pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
-        pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
-        pdf.cell(200, 10, txt=f"Growth Factor: {species_row['Growth_factor']}", ln=True)
-        pdf.cell(200, 10, txt=f"Survival Rate: {species_row['Survival_rate']}", ln=True)
-        pdf.cell(200, 10, txt=f"CO2 Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
+        pdf.cell(200, 10, txt=f"🌳 Tree Species: {selected_species}", ln=True)
+        pdf.cell(200, 10, txt=f"🌱 Soil Type: {species_row['Soil_Type']}", ln=True)
+        pdf.cell(200, 10, txt=f"📍 Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
+        pdf.cell(200, 10, txt=f"📈 Growth Factor: {float(growth):.2f}", ln=True)
+        pdf.cell(200, 10, txt=f"💧 Survival Rate: {float(survival):.2f}", ln=True)
+        pdf.cell(200, 10, txt=f"💨 CO₂ Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
 
-        # CO2 formula section
-        pdf.ln(10)
-        pdf.set_font("Arial", style='B', size=12)
-        pdf.cell(200, 10, txt="CO2 Calculation Formula", ln=True)
-        pdf.set_font("Arial", size=11)
-        pdf.multi_cell(0, 10, txt=(
-            "Total CO2 = (CO2/year) × (Years) × (Survival Rate) × (Growth Factor)\n\n"
-            f"- CO2/year: {co2_rate} kg\n"
-            f"- Years: 20\n"
-            f"- Survival Rate: {species_row['Survival_rate']}\n"
-            f"- Growth Factor: {species_row['Growth_factor']}"
-        ))
-
-        # Plot CO2 graph and insert image
+        # Add Chart
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
             fig, ax = plt.subplots()
             ax.plot(years, co2_1000_trees, marker='s', color='orange')
             ax.set_xlabel("Year")
-            ax.set_ylabel("Total CO2 Captured (kg)")
+            ax.set_ylabel("Total CO₂ Captured (kg)")
             ax.set_title(f"1000 {selected_species} Trees Over 20 Years")
             fig.tight_layout()
             fig.savefig(tmp_img.name)
             plt.close(fig)
-            pdf.image(tmp_img.name, x=10, y=140, w=180)
+            pdf.image(tmp_img.name, x=10, y=100, w=180)
+
+        # 🌟 Unique Quote
+        pdf.set_y(-40)
+        pdf.set_font("Arial", 'I', 11)
+        pdf.multi_cell(0, 10, txt="“One tree can start a forest, one smile can begin a friendship, one hand can lift a soul. Plant trees, grow hope.”")
 
         # Save and download
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
