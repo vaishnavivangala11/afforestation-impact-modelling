@@ -131,7 +131,7 @@ if st.button("📄 Create and Download PDF Report"):
             os.remove(tmp_img.name)
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
-            pdf.output(tmp_pdf.name.encode('latin1'))  # Fix for UnicodeEncodeError
+            pdf.output(tmp_pdf.name)
             with open(tmp_pdf.name, "rb") as f:
                 st.download_button(
                     label="⬇️ Download PDF Report",
