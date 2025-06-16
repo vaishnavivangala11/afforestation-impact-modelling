@@ -101,7 +101,6 @@ ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Ye
 st.pyplot(fig2)
 
 st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{total_20_years:,.0f} kg** of CO₂ in 20 years.")
-
 # 📄 PDF Report
 st.subheader("📄 Generate PDF Report")
 if st.button("📄 Create and Download PDF Report"):
