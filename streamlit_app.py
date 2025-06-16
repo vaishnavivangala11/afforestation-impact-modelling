@@ -111,34 +111,35 @@ if st.button("📄 Create and Download PDF Report"):
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=16)
-        pdf.cell(200, 10, txt="Afforestation CO₂ Report", ln=True, align='C')
+        pdf.cell(200, 10, txt="Afforestation CO2 Report", ln=True, align='C')
 
-        # Tree Info
+        # Tree Info (NO emojis!)
         pdf.set_font("Arial", size=12)
         pdf.ln(10)
-        pdf.cell(200, 10, txt=f"🌳 Tree Species: {selected_species}", ln=True)
-        pdf.cell(200, 10, txt=f"🌱 Soil Type: {species_row['Soil_Type']}", ln=True)
-        pdf.cell(200, 10, txt=f"📍 Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
-        pdf.cell(200, 10, txt=f"📈 Growth Factor: {float(growth):.2f}", ln=True)
-        pdf.cell(200, 10, txt=f"💧 Survival Rate: {float(survival):.2f}", ln=True)
-        pdf.cell(200, 10, txt=f"💨 CO₂ Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
+        pdf.cell(200, 10, txt=f"Tree Species: {selected_species}", ln=True)
+        pdf.cell(200, 10, txt=f"Soil Type: {species_row['Soil_Type']}", ln=True)
+        pdf.cell(200, 10, txt=f"Best Place to Plant: {species_row['Best_Place_to_Plant']}", ln=True)
+        pdf.cell(200, 10, txt=f"Growth Factor: {float(growth):.2f}", ln=True)
+        pdf.cell(200, 10, txt=f"Survival Rate: {float(survival):.2f}", ln=True)
+        pdf.cell(200, 10, txt=f"CO2 Absorbed by 1000 Trees in 20 Years: {int(total_20_years):,} kg", ln=True)
 
-        # Add Chart
+        # Plot Chart and Add
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
             fig, ax = plt.subplots()
             ax.plot(years, co2_1000_trees, marker='s', color='orange')
             ax.set_xlabel("Year")
-            ax.set_ylabel("Total CO₂ Captured (kg)")
+            ax.set_ylabel("Total CO2 Captured (kg)")
             ax.set_title(f"1000 {selected_species} Trees Over 20 Years")
             fig.tight_layout()
             fig.savefig(tmp_img.name)
             plt.close(fig)
             pdf.image(tmp_img.name, x=10, y=100, w=180)
 
-        # 🌟 Unique Quote
+        # Add quote (NO emojis or fancy quotes!)
         pdf.set_y(-40)
         pdf.set_font("Arial", 'I', 11)
-        pdf.multi_cell(0, 10, txt="“One tree can start a forest, one smile can begin a friendship, one hand can lift a soul. Plant trees, grow hope.”")
+        quote = "One tree can start a forest, one hand can lift a soul. Plant trees, grow hope."
+        pdf.multi_cell(0, 10, txt=quote)
 
         # Save and download
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
