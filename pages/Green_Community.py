@@ -1,28 +1,22 @@
 import streamlit as st
-
-# 📱 Mobile-friendly sidebar tip
-st.markdown("""
-<div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-    🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> at the top-left to navigate to <em>Learn</em>, <em>Quiz</em>, or <em>Green Community</em>!
-</div>
-""", unsafe_allow_html=True)
-import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
 import uuid
 
-# 📁 File paths
-chat_file = os.path.join(os.path.dirname(__file__), "..", "app", "community_chat.csv")
-feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "community_feedback.csv")
-os.makedirs(os.path.dirname(chat_file), exist_ok=True)
-os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
-
-# 🌐 Page settings
+# ✅ Must be first!
 st.set_page_config(page_title="💬 Green Community Chat", page_icon="🌿")
+
+# 📱 Sidebar tip
+st.markdown("""
+<div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+    🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> at the top-left to navigate to <em>Learn</em>, <em>Quiz</em>, or <em>Green Community</em>!
+</div>
+""", unsafe_allow_html=True)
+
 st.title("💬 Green Community Chat Wall")
 
-# 🌱 Intro
+# 🌱 Intro message
 st.markdown("""
 <div style='background-color:#e8f5e9; padding: 15px; border-radius: 10px; border-left: 5px solid #66bb6a'>
     <h4>🌱 Let’s grow conversations like tree branches!</h4>
@@ -31,19 +25,25 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# 📁 File paths
+chat_file = os.path.join(os.path.dirname(__file__), "..", "app", "community_chat.csv")
+feedback_file = os.path.join(os.path.dirname(__file__), "..", "app", "community_feedback.csv")
+os.makedirs(os.path.dirname(chat_file), exist_ok=True)
+os.makedirs(os.path.dirname(feedback_file), exist_ok=True)
+
 # 📝 Post new message
 with st.form("main_chat_form", clear_on_submit=True):
     user = st.text_input("Your Name", placeholder="Type your name 😊", max_chars=30)
     message = st.text_area("Your Message", placeholder="Write something here... 🌱", max_chars=500)
     send = st.form_submit_button("📨 Post Message")
 
-# Load messages
+# 🔁 Load chat messages
 if os.path.exists(chat_file):
     chat_df = pd.read_csv(chat_file)
 else:
     chat_df = pd.DataFrame(columns=["ID", "Timestamp", "User", "Message", "Parent_ID"])
 
-# Save new message
+# 💾 Save new message
 if send:
     if user.strip() and message.strip():
         new_entry = pd.DataFrame([{
@@ -60,18 +60,19 @@ if send:
     else:
         st.warning("⚠️ Please fill in both name and message.")
 
-# 🧵 Show messages + replies
+# 🧵 Display messages and replies
 def display_messages(df, parent_id="", level=0):
     messages = df[df["Parent_ID"] == parent_id].sort_values("Timestamp", ascending=False)
     for _, row in messages.iterrows():
         st.markdown(f"""
         <div style='background-color:#f0f8ff;padding:10px;border-radius:8px;margin-bottom:5px;margin-left:{level*20}px'>
-            <strong>👤 {row['User']}</strong>  
+            <strong>👤 {row['User']}</strong><br>
             <p>{row['Message']}</p>
             <small>🕒 {row['Timestamp']}</small>
         </div>
         """, unsafe_allow_html=True)
 
+        # ↪️ Reply form
         with st.expander(f"{'↪️' if level == 0 else '🔁'} Reply to {row['User']}"):
             with st.form(f"reply_form_{row['ID']}", clear_on_submit=True):
                 reply_user = st.text_input("Your Name", placeholder="Your name 😊", key=f"user_{row['ID']}")
@@ -95,21 +96,21 @@ def display_messages(df, parent_id="", level=0):
 
         display_messages(df, parent_id=row["ID"], level=level + 1)
 
-# 🧱 Display community messages
+# 🔔 Show messages
 if not chat_df.empty:
     st.markdown("## 🧱 Messages from the Community")
     display_messages(chat_df)
 else:
     st.info("No messages yet. Be the first to start a conversation! 😊")
 
-# ───────────────────────────────────────────────
+# ────────────────────────────────
 # 🌿 Feedback Section
-# ───────────────────────────────────────────────
+# ────────────────────────────────
 
 st.markdown("---")
 st.markdown("## 🌿 Help Us Grow – Share Your Thoughts About This Green App")
 
-# 📊 Show feedback count
+# 🔢 Feedback count
 if os.path.exists(feedback_file):
     feedback_df = pd.read_csv(feedback_file)
     st.markdown(f"**🧾 Total feedback received: {len(feedback_df)}**")
@@ -124,7 +125,7 @@ with st.form("rating_form", clear_on_submit=True):
     fb_text = st.text_area("Feedback", placeholder="Please share your experience or suggestions (required)...")
     fb_submit = st.form_submit_button("✅ Submit Feedback")
 
-# 💾 Save feedback + confirmation
+# 💾 Save feedback
 if fb_submit:
     if fb_text.strip() == "":
         st.warning("⚠️ Please provide feedback before submitting.")
@@ -143,5 +144,5 @@ if fb_submit:
             all_feedback = fb_entry
 
         all_feedback.to_csv(feedback_file, index=False)
-        st.success("✅ Your feedback has been received and recorded. We truly appreciate your thoughts! 🌿")
+        st.success("✅ Your feedback has been received. Thank you! 🌿")
         st.rerun()
