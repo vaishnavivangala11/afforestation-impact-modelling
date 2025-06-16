@@ -1,6 +1,14 @@
 import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import tempfile
+import os
+from fpdf import FPDF
 
-# Inject custom CSS to hide Streamlit's default sidebar pages
+# ✅ This must be the first Streamlit command
+st.set_page_config(page_title="Afforestation Impact – East Godavari", page_icon="🌳", layout="wide")
+
+# ✅ Hide Streamlit’s default page links
 st.markdown("""
     <style>
     [data-testid="stSidebarNav"] {
@@ -8,216 +16,56 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-import streamlit as st
 
-# 📱 Mobile-friendly sidebar tip
+# ✅ Mobile users navigation tip
 st.markdown("""
 <div style="background-color: #e6f2ff; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-    🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> at the top-left to navigate to <em>Learn</em>, <em>Quiz</em>, or <em>Green Community</em>!
+    🔍 <strong>Tip:</strong> Tap the <strong>☰ menu</strong> (top-left) to access <em>Learn</em>, <em>Quiz</em>, and <em>Green Community</em> pages!
 </div>
 """, unsafe_allow_html=True)
 
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-import tempfile
-import os
-from fpdf import FPDF
-
-# ✅ Page configuration
-st.set_page_config(page_title="Afforestation Impact – East Godavari", page_icon="🌳", layout="wide")
-
-# ✅ Load Excel file from app folder
-file_path = os.path.join(os.path.dirname(__file__), "local_species.xlsx")
-df = pd.read_excel(file_path)
-
 # ✅ Title
-st.title("🌳 Afforestation Impact Modelling")
+st.title("🌿 Afforestation Impact Modelling")
 
-# 🌿 Tree dropdown
-tree = st.selectbox("Select a Tree Species", df["Tree Name"])
+# ✅ File path setup
+file_path = os.path.join("app", "local_species.xlsx")
 
-# 📏 Tree age input
-age = st.slider("Enter Tree Age (in Years)", min_value=1, max_value=200)
-st.caption("ℹ️ Most trees absorb CO₂ effectively for 20–30 years. We allow up to 200 years for long-living species like Banyan or Peepal.")
+# ✅ Load the tree species data
+try:
+    df = pd.read_excel(file_path)
+except FileNotFoundError:
+    st.error("🚫 Tree species file not found. Please make sure 'local_species.xlsx' is in the 'app/' folder.")
+    st.stop()
 
-# 📊 Get selected tree data
-selected_tree = df[df["Tree Name"] == tree].iloc[0]
-survival_rate = selected_tree["Survival_rate"]
-growth_factor = selected_tree["Growth_factor"]
-adjusted_co2 = age * selected_tree["CO2_per_year_kg"] * survival_rate * growth_factor
+# ✅ User inputs
+tree = st.selectbox("Select a Tree Species", df['Tree'])
+age = st.slider("Enter Tree Age (in Years)", 1, 200, 1)
 
-st.markdown(f"📈 **Growth Factor:** {growth_factor} &nbsp;&nbsp;&nbsp;&nbsp; 💧 **Survival Rate:** {survival_rate}")
-st.success(f"🌱 A {tree} tree absorbs approx. **{adjusted_co2:.1f} kg of CO₂** over {age} years.")
-st.info(f"🕰️ Max Age for {tree}: {selected_tree['Max_Age']} years")
+# ✅ Get selected tree row
+row = df[df['Tree'] == tree].iloc[0]
 
-with st.expander("🧮 How is this CO₂ value calculated? Click to see the formula"):
+# ✅ Display CO₂ calculation
+factor = row['Growth_Factor']
+rate = row['Survival_Rate']
+co2 = factor * rate * age * 26  # example formula
+
+# ✅ Show outputs
+st.markdown(f"📈 **Growth Factor**: {factor}")
+st.markdown(f"💧 **Survival Rate**: {rate}")
+st.success(f"🌳 A {tree} tree absorbs approx. **{co2:.1f} kg of CO₂** over {age} years.")
+
+# ✅ Max age
+if 'Max_Age' in row:
+    st.info(f"🎯 Max Age for {tree}: **{row['Max_Age']} years**")
+
+# ✅ Explanation
+with st.expander("📘 How is this CO₂ value calculated? Click to see the formula"):
     st.markdown("""
-    ### 🧾 **CO₂ Absorption Formula**
-
-    ```
-    Total CO₂ = (CO₂ per year) × (Tree Age) × (Survival Rate) × (Growth Factor)
-    ```
-
-    #### ✅ Explanation:
-    - **CO₂ per year**: How much CO₂ this tree species absorbs annually.
-    - **Tree Age**: Number of years you've selected.
-    - **Survival Rate**: Likelihood the tree survives (e.g., 0.85 = 85%).
-    - **Growth Factor**: Adjustment based on tree’s growth rate and environmental fit.
-
-    ---
-    🌍 This is a **realistic estimate** of carbon removal by the tree over the selected period.
+    **Formula Used:**
+    \n`CO₂ Absorbed = Growth Factor × Survival Rate × Age × Base CO₂`
+    \nWhere base CO₂ = 26 kg/year.
     """)
 
-st.info(f"🧪 **Soil Type:** {selected_tree['Soil_Type']}\n\n📍 **Best Place to Plant:** {selected_tree['Best_Place_to_Plant']}")
-
-# 📈 CO2 Graph Over 20 Years
-st.subheader("📈 CO₂ Sequestration Over 20 Years")
-selected_species = st.selectbox("Choose a tree species for the graph:", df["Tree Name"])
-species_row = df[df["Tree Name"] == selected_species].iloc[0]
-
-co2_rate = species_row["CO2_per_year_kg"]
-survival = species_row["Survival_rate"]
-growth = species_row["Growth_factor"]
-years = list(range(1, 21))
-co2_values = [co2_rate * year * survival * growth for year in years]
-
-fig, ax = plt.subplots()
-ax.plot(years, co2_values, marker='o', color='green')
-ax.set_xlabel("Year")
-ax.set_ylabel("Cumulative CO₂ Captured (kg)")
-ax.set_title(f"CO₂ Capture by {selected_species} Over 20 Years")
-st.pyplot(fig)
-
-# 🌳 What If 1000 Trees
-st.markdown("### 🌳 What If Scenario: 1000 Plants Over 20 Years")
-
-tree_row = df[df['Species'] == selected_tree['Species']]
-co2_absorption = []
-
-if not tree_row.empty:
-    rate = tree_row['CO2_per_year_kg'].values[0]
-    max_age = tree_row['Max_Age'].values[0]
-
-    for year in years:
-        if year <= max_age:
-            total = rate * 1000 * year
-        else:
-            total = rate * 1000 * max_age
-        co2_absorption.append(total)
-
-    fig2, ax2 = plt.subplots()
-    ax2.plot(years, co2_absorption, marker='s', color='orange')
-    ax2.set_xlabel("Year")
-    ax2.set_ylabel("Total CO₂ Captured (kg)")
-    ax2.set_title(f"CO₂ Sequestration for 1000 {selected_species} Trees Over 20 Years")
-    st.pyplot(fig2)
-
-    st.success(f"🌍 Planting 1000 {selected_species} trees can absorb **{co2_absorption[-1]:,.0f} kg** of CO₂ in 20 years.")
-
-    if selected_tree['Tree Name'] == "Duckweed":
-        st.info("💧 Duckweed grows in water bodies and absorbs CO₂ rapidly. Ideal for wetlands or wastewater treatment.")
-    elif selected_tree['Tree Name'] == "Vetiver Grass":
-        st.info("🌾 Vetiver is great for erosion control and carbon in soil. Perfect for riverbanks and degraded lands.")
-        # 📄 PDF Report
-st.subheader("📄 Generate PDF Report")
-
-# ✅ Safe encoding function for PDF text
-def safe_pdf_text(text):
-    return text.encode('latin-1', 'replace').decode('latin-1')
-
-if st.button("📄 Create and Download PDF Report"):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=16)
-    pdf.cell(200, 10, txt="Afforestation CO2 Report", ln=True, align='C')
-    pdf.set_font("Arial", size=12)
-    pdf.ln(10)
-    pdf.cell(200, 10, txt=safe_pdf_text(f"Tree Species: {selected_species}"), ln=True)
-    pdf.cell(200, 10, txt=safe_pdf_text(f"Soil Type: {species_row['Soil_Type']}"), ln=True)
-    pdf.cell(200, 10, txt=safe_pdf_text(f"Best Place to Plant: {species_row['Best_Place_to_Plant']}"), ln=True)
-    pdf.cell(200, 10, txt=safe_pdf_text(f"CO2 Absorbed by 1000 Trees in 20 Years: {int(co2_absorption[-1]):,} kg"), ln=True)
-
-    # Save graph to temporary image file
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-        fig3, ax3 = plt.subplots()
-        ax3.plot(years, co2_absorption, marker='s', color='orange')
-        ax3.set_xlabel("Year")
-        ax3.set_ylabel("Total CO2 Captured (kg)")
-        ax3.set_title(f"1000 {selected_species} Trees Over 20 Years")
-        fig3.savefig(tmpfile.name)
-        plt.close(fig3)
-        pdf.image(tmpfile.name, x=10, y=80, w=180)
-    try:
-        os.remove(tmpfile.name)
-    except:
-        pass
-
-    # Save PDF to temp and offer download
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as pdf_file:
-        pdf.output(pdf_file.name)
-        with open(pdf_file.name, "rb") as f:
-            st.download_button("⬇️ Download PDF Report", f, file_name="afforestation_report.pdf", mime="application/pdf")
-      
-
-# 🗺️ Map
-st.subheader("🗺️ East Godavari Map")
-map_df = pd.DataFrame({'lat': [17.0], 'lon': [82.2]})
-st.map(map_df, zoom=9)
-st.subheader("📘 Case Study: Tree & Plant CO₂ Impact")
-
-with st.expander("📊 Can Trees & Plants Really Capture That Much CO₂?"):
-    st.markdown("""
-**❓ What if we plant 1,000 Neem trees in East Godavari?**  
-✅ Over 10 years, they can absorb **212.5 tons of CO₂**!  
-🌳 Plus, they offer shade, clean air, and biodiversity support.
-
-**❓ Can a small water pond help climate action?**  
-✅ Yes! A 1-acre pond filled with fast-growing **duckweed** can remove up to **10 tons of CO₂** in just 2 years.  
-🪴 Duckweed also cleans water and grows rapidly.
-
-**❓ What can we plant on dry slopes or bunds?**  
-✅ **Vetiver grass** is ideal. 500 rows can store **8.1 tons of CO₂** in 15 years.  
-🌾 It prevents erosion and thrives in poor soil with little water.
-
----
-
-🌿 These real-life cases show how small actions in local spaces can make a big climate difference.  
-Let’s plant smart — and grow impact!
-""")
-
-# 🌍 SDG Text
-st.subheader("🌍 SDG Impact")
-st.markdown("""
-### 🎯 Sustainable Development Goals (SDGs) Impact
-
-By promoting tree planting using real local species, this project actively supports the following SDGs:
-
-- ✅ **SDG 13: Climate Action**  
-  Trees capture atmospheric CO₂, directly contributing to climate change mitigation.
-
-- ✅ **SDG 15: Life on Land**  
-  Afforestation enhances biodiversity, restores degraded lands, and supports ecosystem balance.
-
-- ✅ **SDG 6: Clean Water and Sanitation**  
-  Improved green cover supports better water infiltration and protects watersheds.
-
-- ✅ **SDG 3: Good Health and Well-being**  
-  More trees mean cleaner air, shade, and improved physical and mental health for communities.
-
-- ✅ **SDG 1 & 8: No Poverty & Decent Work**  
-  Tree plantation drives create jobs and improve rural livelihoods through nursery and forestry work.
-""")
-
-st.markdown("""
-🌳 *Your simple act of planting a tree supports global goals and local futures.*  
-✅ From cleaner air to better jobs, every tree brings us one step closer to the SDGs.
-""")
-
-# ✅ Sidebar Navigation
-with st.sidebar:
-    st.title("🌿 Navigation")
-    st.markdown("[🏠 Home](./)")
-    st.markdown("[📘 Learn](./Learn)")
-    st.markdown("[🧠 Quiz](./Quiz)")
-    st.markdown("[🌱 Green Community](./Green_Community)")
+# ✅ Soil and location info
+st.markdown(f"🪴 **Soil Type**: {row['Soil_Type']}")
+st.markdown(f"📍 **Best Place to Plant**: {row['Best_Place_to_Plant']}")
